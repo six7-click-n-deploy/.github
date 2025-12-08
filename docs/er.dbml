@@ -1,0 +1,71 @@
+// DBML mit korrekten Relationen und Kardinalitäten
+ 
+Table app {
+  appId uuid [primary key]
+  name varchar
+  description varchar
+  image base64
+  git_link varchar
+  userId uuid [ref: > user.userId] // many-to-one: viele Apps gehören einem User
+  created_at timestamp
+}
+ 
+Table deployment {
+  deploymentId uuid [primary key]
+  name varchar
+  status varchar
+  commitHash varchar
+  commitInfo varchar
+  userInputVar varchar
+  userId uuid [ref: > user.userId] // many-to-one: viele Deployments gehören einem User
+  appId uuid [ref: > app.appId] // many-to-one: viele Deployments gehören einer App
+}
+ 
+Table user {
+  userId uuid [primary key]
+  email varchar [unique]
+  username varchar
+  password varchar
+  role varchar
+  courseId uuid [ref: > course.courseId] // many-to-one: viele User gehören einem Course
+  created_at timestamp
+}
+ 
+Table course {
+  courseId uuid [primary key]
+  name varchar
+}
+ 
+Table userGroup {
+  userGroupId uuid [primary key]
+  deploymentId uuid [ref: - deployment.deploymentId] // one-to-one: eine UserGroup gehört zu einem Deployment
+}
+ 
+Table userToUserGroup {
+  userToUserGroupId uuid [primary key]
+  userId uuid [ref: > user.userId] // many-to-one
+  userGroupId uuid [ref: > userGroup.userGroupId] // many-to-one
+}
+ 
+Table courseToUserGroup {
+  courseToUserGroupID uuid [primary key]
+  courseId uuid [ref: > course.courseId] // many-to-one
+  userGroupId uuid [ref: > userGroup.userGroupId] // many-to-one
+}
+ 
+Table team {
+  teamId uuid [primary key]
+  name varchar
+  userGroupId uuid [ref: > userGroup.userGroupId] // many-to-one: viele Teams gehören einer UserGroup
+}
+ 
+Table userToTeam {
+  userToTeamId uuid [primary key]
+  userId uuid [ref: > user.userId] // many-to-one
+  teamId uuid [ref: > team.teamId] // many-to-one
+}
+ 
+// Kardinalitäten Legende:
+// ref: > bedeutet many-to-one (n:1)
+// ref: - bedeutet one-to-one (1:1)
+// ref: < bedeutet one-to-many (1:n) - wird nicht verwendet, da immer von "many" Seite definiert
