@@ -1,0 +1,285 @@
+@startuml SIX7-Deployment-Diagram
+
+title SIX7 Click'n Deploy - Deployment-Diagramm (Infrastructure)
+
+skinparam backgroundColor #FEFEFE
+skinparam node {
+    BackgroundColor #E3F2FD
+    BorderColor #1976D2
+}
+skinparam component {
+    BackgroundColor #FFFFFF
+    BorderColor #424242
+}
+skinparam database {
+    BackgroundColor #E8F5E9
+    BorderColor #388E3C
+}
+skinparam queue {
+    BackgroundColor #FFF9C4
+    BorderColor #F57F17
+}
+skinparam cloud {
+    BackgroundColor #FFEBEE
+    BorderColor #C62828
+}
+
+' ================================================================
+' CLIENT LAYER
+' ================================================================
+node "Client Browser" as client {
+    component "Vue 3 SPA" as vueSPA
+}
+
+' ================================================================
+' DOCKER NETWORK: FRONTEND
+' ================================================================
+node "Docker Network: frontend-network" as frontendNet {
+    
+    node "Frontend Container\n:3000 (Vite Dev Server)" as frontendContainer {
+        artifact "Node.js 20" as node
+        component "Vue App\n(Hot Reload)" as vueApp
+        folder "/app (Volume Mount)" as frontendVolume
+    }
+}
+
+' ================================================================
+' DOCKER NETWORK: BACKEND
+' ================================================================
+node "Docker Network: backend-network" as backendNet {
+    
+    node "Backend Container\n:8000 (Uvicorn)" as backendContainer {
+        artifact "Python 3.11+" as python
+        component "FastAPI App\n(Hot Reload)" as fastapiApp
+        component "SQLAlchemy ORM" as sqlalchemy
+        component "Celery Client" as celeryProducer
+        folder "/app (Volume Mount)" as backendVolume
+        folder "/tmp/repos (Git Clone)" as gitRepos
+    }
+    
+    database "PostgreSQL Container\n:5432" as postgres {
+        component "PostgreSQL 16" as postgresDB
+        folder "postgres_data\n(Volume)" as postgresVolume
+    }
+}
+
+' ================================================================
+' DOCKER NETWORK: WORKER
+' ================================================================
+node "Docker Network: worker-network" as workerNet {
+    
+    node "Worker Container(s)\n(Celery)" as workerContainer {
+        artifact "Python 3.11+" as pythonWorker
+        component "Celery Worker\n(Consumer)" as celeryConsumer
+        component "Git Client" as gitClient
+        component "Terraform CLI" as terraform
+        component "OpenStack Client" as openstackCLI
+        folder "/workspace\n(Temp Repos)" as workerWorkspace
+    }
+    
+    queue "RabbitMQ Container\n:5672, :15672" as rabbitmq {
+        component "RabbitMQ 3" as rabbitMQBroker
+        folder "rabbitmq_data\n(Volume)" as rabbitmqVolume
+    }
+    
+    database "Redis Container\n:6379" as redis {
+        component "Redis 7" as redisCache
+        folder "redis_data\n(Volume)" as redisVolume
+    }
+}
+
+' ================================================================
+' DOCKER HOST
+' ================================================================
+node "Docker Host\n(Development/Production)" as dockerHost {
+    component "Docker Engine" as dockerEngine
+    component "Docker Compose" as dockerCompose
+}
+
+' ================================================================
+' EXTERNAL SERVICES
+' ================================================================
+cloud "GitHub" as github {
+    storage "Template Repositories\n(Terraform + IaC)" as githubRepos
+    component "Deploy Key Auth" as deployKey
+}
+
+cloud "OpenStack Infrastructure" as openstack {
+    node "Compute Nodes" as computeNodes {
+        component "VM Instances" as vms
+    }
+    node "Network Nodes" as networkNodes {
+        component "Virtual Networks" as networks
+        component "Floating IPs" as floatingIPs
+    }
+    node "Storage Nodes" as storageNodes {
+        component "Block Storage\n(Cinder)" as blockStorage
+        component "Object Storage\n(Swift)" as objectStorage
+    }
+    component "Keystone (Auth)" as keystone
+    component "Nova (Compute)" as nova
+    component "Neutron (Network)" as neutron
+}
+
+' ================================================================
+' MONITORING (Optional)
+' ================================================================
+node "Monitoring (Optional)" as monitoring {
+    component "Prometheus" as prometheus
+    component "Grafana" as grafana
+}
+
+' ================================================================
+' VERBINDUNGEN - CLIENT TO FRONTEND
+' ================================================================
+client --> frontendContainer : HTTPS :443\n(Nginx/Reverse Proxy)
+frontendContainer --> backendContainer : HTTP :8000\n(REST API)
+
+' ================================================================
+' VERBINDUNGEN - BACKEND
+' ================================================================
+backendContainer --> postgres : TCP :5432\n(SQL Queries)
+backendContainer --> rabbitmq : AMQP :5672\n(Publish Tasks)
+backendContainer --> redis : TCP :6379\n(Get Results)
+
+' ================================================================
+' VERBINDUNGEN - WORKER
+' ================================================================
+workerContainer --> rabbitmq : AMQP :5672\n(Consume Tasks)
+workerContainer --> redis : TCP :6379\n(Store Results)
+workerContainer --> postgres : TCP :5432\n(Update Status)
+workerContainer --> github : SSH :22\n(Git Clone)
+workerContainer --> openstack : HTTPS :443\n(OpenStack API)
+
+' ================================================================
+' VERBINDUNGEN - OPENSTACK
+' ================================================================
+terraform --> keystone : Auth
+terraform --> nova : Create VMs
+terraform --> neutron : Configure Networks
+terraform --> blockStorage : Attach Volumes
+
+' ================================================================
+' DOCKER COMPOSE ORCHESTRATION
+' ================================================================
+dockerCompose --> frontendContainer : Manage
+dockerCompose --> backendContainer : Manage
+dockerCompose --> workerContainer : Manage\n(Dynamic Scaling)
+dockerCompose --> postgres : Manage
+dockerCompose --> rabbitmq : Manage
+dockerCompose --> redis : Manage
+
+dockerEngine --> dockerCompose : Runtime
+
+' ================================================================
+' MONITORING CONNECTIONS
+' ================================================================
+prometheus ..> backendContainer : Scrape Metrics
+prometheus ..> workerContainer : Scrape Metrics
+prometheus ..> postgres : Scrape Metrics
+grafana ..> prometheus : Query Metrics
+
+' ================================================================
+' VOLUMES & PERSISTENCE
+' ================================================================
+frontendVolume ..> vueApp : Hot Reload
+backendVolume ..> fastapiApp : Hot Reload
+postgresVolume ..> postgresDB : Persist Data
+rabbitmqVolume ..> rabbitMQBroker : Persist Queues
+redisVolume ..> redisCache : Persist Results
+workerWorkspace ..> gitClient : Temp Clone
+
+' ================================================================
+' NOTES
+' ================================================================
+note right of frontendContainer
+    **Development:**
+    - Vite Dev Server
+    - Hot Module Replacement
+    - Volume Mount: ../frontend
+    
+    **Production:**
+    - Nginx + Static Build
+    - Optimized Assets
+end note
+
+note right of backendContainer
+    **Environment:**
+    - DATABASE_URL
+    - CELERY_BROKER_URL
+    - CELERY_RESULT_BACKEND
+    - SECRET_KEY
+    - CORS_ORIGINS
+    
+    **Volumes:**
+    - ../backend:/app (code)
+    - /tmp/repos (git clones)
+end note
+
+note bottom of workerContainer
+    **Scaling Strategy:**
+    - Horizontal Scaling (N workers)
+    - Auto-scale based on queue length
+    - One worker per deployment task
+    
+    **Task Processing:**
+    1. Consume from RabbitMQ
+    2. Clone GitHub repo
+    3. Run Terraform
+    4. Update deployment status
+    5. Store result in Redis
+end note
+
+note bottom of openstack
+    **OpenStack Services:**
+    - Keystone: Authentication
+    - Nova: VM Management
+    - Neutron: Networking
+    - Cinder: Block Storage
+    - Swift: Object Storage
+    
+    **Deployment Types:**
+    - Single VMs
+    - Multi-Tier Apps
+    - Kubernetes Clusters
+    - Isolated Networks (Labs)
+end note
+
+note top of dockerHost
+    **Docker Compose Files:**
+    - docker-compose.dev.yml
+    - docker-compose.prod.yml
+    
+    **Networks:**
+    - frontend-network
+    - backend-network
+    - worker-network
+    
+    **Deployment:**
+    - make dev-up
+    - make prod-up
+end note
+
+' ================================================================
+' LEGEND
+' ================================================================
+legend right
+    **Port Mapping:**
+    - Frontend: 3000 (dev) / 80 (prod)
+    - Backend: 8000
+    - PostgreSQL: 5432
+    - RabbitMQ: 5672 (AMQP), 15672 (UI)
+    - Redis: 6379
+    
+    **Protocols:**
+    - HTTP/HTTPS: REST API
+    - AMQP: Message Queue
+    - TCP: Database, Redis
+    - SSH: Git Clone
+    
+    **Persistence:**
+    - All databases use Docker volumes
+    - Code mounted for hot reload (dev)
+endlegend
+
+@enduml

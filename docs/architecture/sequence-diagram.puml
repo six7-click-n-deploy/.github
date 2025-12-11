@@ -1,0 +1,322 @@
+@startuml SIX7-Sequence-Diagram
+
+title SIX7 Click'n Deploy - Sequenzdiagramm: App Deployment Flow
+
+skinparam backgroundColor #FEFEFE
+skinparam sequence {
+    ArrowColor #1976D2
+    ActorBorderColor #1976D2
+    LifeLineBorderColor #1976D2
+    LifeLineBackgroundColor #E3F2FD
+    
+    ParticipantBorderColor #424242
+    ParticipantBackgroundColor #FFFFFF
+    
+    BoxBorderColor #9E9E9E
+    BoxBackgroundColor #F5F5F5
+}
+
+' ================================================================
+' AKTEURE & SYSTEME
+' ================================================================
+actor "Student/Dozent" as user
+participant "Vue Frontend" as frontend
+box "Backend Services" #FFF3E0
+    participant "FastAPI\nBackend" as backend
+    participant "SQLAlchemy\nORM" as orm
+    participant "Celery\nProducer" as celeryProducer
+end box
+
+box "Message Queue" #FFF9C4
+    queue "RabbitMQ" as rabbitmq
+    database "Redis" as redis
+end box
+
+box "Worker Services" #F3E5F5
+    participant "Celery\nWorker" as celeryWorker
+    participant "Git\nClient" as gitClient
+    participant "Terraform\nEngine" as terraform
+end box
+
+box "External Systems" #FFEBEE
+    database "PostgreSQL" as postgres
+    participant "GitHub" as github
+    participant "OpenStack\nAPI" as openstack
+end box
+
+' ================================================================
+' PHASE 1: APP AUSWAHL & KONFIGURATION
+' ================================================================
+group Phase 1: App-Auswahl & Konfiguration
+    user -> frontend : Wählt App aus Template-Store
+    activate frontend
+    
+    frontend -> backend : GET /apps
+    activate backend
+    backend -> orm : Query Apps
+    activate orm
+    orm -> postgres : SELECT * FROM apps
+    activate postgres
+    postgres --> orm : App-Liste
+    deactivate postgres
+    orm --> backend : App-Objekte
+    deactivate orm
+    backend --> frontend : JSON: Apps[]
+    deactivate backend
+    
+    frontend --> user : Zeigt verfügbare Apps
+    
+    user -> frontend : Klickt "Deploy" + Konfiguration\n(Terraform-Variablen)
+    
+    frontend -> frontend : Validiert Input
+    
+    note right of frontend
+        **Konfiguration enthält:**
+        - App-ID
+        - Deployment-Name
+        - Terraform-Variablen (JSON)
+        - Optional: Team/UserGroup
+    end note
+end
+
+' ================================================================
+' PHASE 2: DEPLOYMENT ERSTELLEN
+' ================================================================
+group Phase 2: Deployment-Erstellung
+    frontend -> backend : POST /deployments\n{"appId": "uuid", "name": "...", "userInputVar": "..."}
+    activate backend
+    
+    backend -> backend : Authentifizierung (JWT)
+    backend -> backend : Autorisierung (User-Role)
+    
+    backend -> orm : Create Deployment
+    activate orm
+    orm -> postgres : INSERT INTO deployments\n(status=PENDING)
+    activate postgres
+    postgres --> orm : deploymentId
+    deactivate postgres
+    orm --> backend : Deployment-Objekt
+    deactivate orm
+    
+    note right of backend
+        **Deployment-Record:**
+        - deploymentId: UUID
+        - userId: UUID
+        - appId: UUID
+        - status: PENDING
+        - userInputVar: JSON
+        - created_at: timestamp
+    end note
+    
+    backend -> celeryProducer : send_task("deploy_application",\nargs=[deploymentId, appId, variables])
+    activate celeryProducer
+    
+    celeryProducer -> rabbitmq : Publish Task\n(Queue: default)
+    activate rabbitmq
+    rabbitmq --> celeryProducer : Task-ID
+    deactivate rabbitmq
+    deactivate celeryProducer
+    
+    backend -> orm : Update Deployment\n(celery_task_id)
+    activate orm
+    orm -> postgres : UPDATE deployments
+    postgres --> orm : OK
+    deactivate orm
+    
+    backend --> frontend : 202 Accepted\n{"deploymentId": "...", "status": "PENDING"}
+    deactivate backend
+    
+    frontend --> user : "Deployment wird gestartet..."
+    deactivate frontend
+end
+
+' ================================================================
+' PHASE 3: WORKER PROCESSING
+' ================================================================
+group Phase 3: Asynchrone Worker-Verarbeitung
+    rabbitmq -> celeryWorker : Consume Task
+    activate celeryWorker
+    
+    celeryWorker -> celeryWorker : Parse Task-Argumente
+    
+    note right of celeryWorker
+        **Worker startet:**
+        - Neuer Container (Auto-Scale)
+        - Isolierte Umgebung
+        - Temp Workspace
+    end note
+    
+    ' Status-Update: RUNNING
+    celeryWorker -> orm : Update Deployment\n(status=RUNNING)
+    activate orm
+    orm -> postgres : UPDATE deployments\nSET status='RUNNING'
+    postgres --> orm : OK
+    deactivate orm
+    
+    ' Git Clone
+    celeryWorker -> orm : Get App Details
+    activate orm
+    orm -> postgres : SELECT * FROM apps\nWHERE appId=...
+    postgres --> orm : App (git_link, ...)
+    deactivate orm
+    
+    celeryWorker -> gitClient : Clone Repository
+    activate gitClient
+    gitClient -> github : git clone <git_link>\n(Deploy Key Auth)
+    activate github
+    github --> gitClient : Repository Files\n(Terraform Code)
+    deactivate github
+    deactivate gitClient
+    
+    note right of gitClient
+        **Repository-Struktur:**
+        - main.tf
+        - variables.tf
+        - outputs.tf
+        - terraform.tfvars (optional)
+    end note
+    
+    ' Terraform Init
+    celeryWorker -> terraform : terraform init
+    activate terraform
+    terraform --> celeryWorker : Initialized
+    
+    ' Terraform Plan
+    celeryWorker -> terraform : terraform plan\n-var-file=<user_vars>
+    terraform --> celeryWorker : Execution Plan
+    
+    ' Terraform Apply
+    celeryWorker -> terraform : terraform apply -auto-approve
+    terraform -> openstack : Create Resources
+    activate openstack
+    
+    openstack -> openstack : Authenticate (Keystone)
+    openstack -> openstack : Create VM (Nova)
+    openstack -> openstack : Configure Network (Neutron)
+    openstack -> openstack : Attach Storage (Cinder)
+    
+    openstack --> terraform : Resources Created\n(VM IPs, URLs, ...)
+    deactivate openstack
+    
+    terraform --> celeryWorker : Apply Complete\n+ Outputs
+    deactivate terraform
+    
+    note right of terraform
+        **Terraform Outputs:**
+        - vm_ip: "192.168.1.10"
+        - ssh_command: "ssh user@..."
+        - access_url: "https://..."
+    end note
+end
+
+' ================================================================
+' PHASE 4: STATUS UPDATE & COMPLETION
+' ================================================================
+group Phase 4: Deployment-Abschluss
+    celeryWorker -> orm : Update Deployment\n(status=SUCCESS, outputs)
+    activate orm
+    orm -> postgres : UPDATE deployments\nSET status='SUCCESS',\ncommitInfo=<outputs>
+    postgres --> orm : OK
+    deactivate orm
+    
+    celeryWorker -> redis : Store Task Result
+    activate redis
+    redis --> celeryWorker : OK
+    deactivate redis
+    
+    celeryWorker --> rabbitmq : ACK Task
+    deactivate celeryWorker
+    
+    note right of celeryWorker
+        **Bei Fehler:**
+        - status=FAILED
+        - Error-Message in commitInfo
+        - Retry-Logic (optional)
+        - Rollback (terraform destroy)
+    end note
+end
+
+' ================================================================
+' PHASE 5: USER BENACHRICHTIGUNG
+' ================================================================
+group Phase 5: Nutzer-Information
+    user -> frontend : Polling / WebSocket
+    activate frontend
+    
+    frontend -> backend : GET /deployments/{deploymentId}
+    activate backend
+    backend -> orm : Get Deployment
+    activate orm
+    orm -> postgres : SELECT * FROM deployments
+    postgres --> orm : Deployment (status=SUCCESS)
+    deactivate orm
+    backend --> frontend : JSON: Deployment Details
+    deactivate backend
+    
+    frontend --> user : "Deployment erfolgreich!"\n+ Zugriffsdaten (IP, URL, SSH)
+    deactivate frontend
+    
+    note right of user
+        **Nutzer erhält:**
+        - VM IP-Adresse
+        - SSH-Zugang
+        - Web-URLs
+        - Status-Informationen
+        - Logs (optional)
+    end note
+end
+
+' ================================================================
+' ALTERNATIVE FLOWS
+' ================================================================
+group Alternative: Deployment Fehlgeschlagen
+    celeryWorker -> terraform : terraform apply
+    activate terraform
+    terraform -> openstack : Create Resources
+    activate openstack
+    openstack --> terraform : ERROR: Quota exceeded
+    deactivate openstack
+    terraform --> celeryWorker : Apply Failed
+    deactivate terraform
+    
+    celeryWorker -> orm : Update Deployment\n(status=FAILED)
+    activate orm
+    orm -> postgres : UPDATE deployments\nSET status='FAILED',\ncommitInfo='ERROR: ...'
+    postgres --> orm : OK
+    deactivate orm
+    
+    celeryWorker -> redis : Store Error Result
+    activate redis
+    redis --> celeryWorker : OK
+    deactivate redis
+    
+    frontend -> backend : GET /deployments/{id}
+    activate backend
+    backend -> orm : Get Deployment
+    activate orm
+    orm -> postgres : SELECT
+    postgres --> orm : status=FAILED
+    deactivate orm
+    backend --> frontend : Deployment (FAILED)
+    deactivate backend
+    
+    frontend --> user : "Deployment fehlgeschlagen"\n+ Fehlermeldung
+end
+
+' ================================================================
+' NOTES
+' ================================================================
+note over user, openstack
+    **Deployment-Lifecycle:**
+    1. PENDING: Initial state
+    2. RUNNING: Worker processing
+    3. SUCCESS: Deployment completed
+    4. FAILED: Error occurred
+    
+    **Weitere Operationen:**
+    - UPDATE: terraform apply (update)
+    - STOP: terraform destroy
+    - RESTART: stop + deploy
+end note
+
+@enduml

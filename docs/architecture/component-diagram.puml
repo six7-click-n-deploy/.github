@@ -1,0 +1,225 @@
+@startuml SIX7-Component-Diagram
+
+!define RECTANGLE class
+
+title SIX7 Click'n Deploy - Komponentendiagramm
+
+skinparam componentStyle rectangle
+skinparam backgroundColor #FEFEFE
+skinparam component {
+    BackgroundColor<<frontend>> #E3F2FD
+    BackgroundColor<<backend>> #FFF3E0
+    BackgroundColor<<worker>> #F3E5F5
+    BackgroundColor<<database>> #E8F5E9
+    BackgroundColor<<queue>> #FFF9C4
+    BackgroundColor<<external>> #FFEBEE
+}
+
+' ================================================================
+' FRONTEND KOMPONENTEN
+' ================================================================
+package "Frontend (Vue 3 SPA)" <<frontend>> {
+    component "Vue Router" as router
+    component "Pinia Store\n(State Management)" as store
+    component "Auth Service" as authService
+    component "API Client\n(Axios)" as apiClient
+    
+    package "Views" {
+        component "Login/Register" as authViews
+        component "Dashboard" as dashboard
+        component "App Store\n(Templates)" as templatesView
+        component "Courses View" as coursesView
+        component "Deployments" as deploymentsView
+        component "Admin Panel" as adminView
+    }
+    
+    package "Components" {
+        component "UI Components" as uiComponents
+        component "i18n (Mehrsprachig)" as i18n
+    }
+}
+
+' ================================================================
+' BACKEND KOMPONENTEN
+' ================================================================
+package "Backend (FastAPI)" <<backend>> {
+    component "FastAPI App" as fastapi
+    component "CORS Middleware" as cors
+    component "JWT Auth" as jwtAuth
+    
+    package "Routers (API Endpoints)" {
+        component "Auth Router\n/auth" as authRouter
+        component "Users Router\n/users" as usersRouter
+        component "Apps Router\n/apps" as appsRouter
+        component "Deployments Router\n/deployments" as deploymentsRouter
+        component "Courses Router\n/courses" as coursesRouter
+    }
+    
+    package "Services" {
+        component "Celery Client\n(Producer)" as celeryClient
+        component "Git Service" as gitService
+    }
+    
+    package "Data Layer" {
+        component "SQLAlchemy ORM" as orm
+        component "Database Models" as models
+        component "Pydantic Schemas" as schemas
+    }
+}
+
+' ================================================================
+' WORKER KOMPONENTEN
+' ================================================================
+package "Worker (Celery)" <<worker>> {
+    component "Celery Worker\n(Consumer)" as celeryWorker
+    
+    package "Job Handlers" {
+        component "Git Operations\n(Clone/Pull)" as gitOps
+        component "Terraform Ops\n(Init/Plan/Apply)" as terraformOps
+        component "OpenStack Client" as openstackClient
+    }
+    
+    component "Backend API Client\n(Status Updates)" as backendClient
+    component "Job Models" as jobModels
+}
+
+' ================================================================
+' DATENBANK & QUEUE
+' ================================================================
+database "PostgreSQL" <<database>> {
+    storage "Users, Courses" as userTables
+    storage "Apps, Deployments" as appTables
+    storage "Teams, UserGroups" as groupTables
+}
+
+queue "RabbitMQ\n(Message Broker)" <<queue>> {
+    storage "Task Queue" as taskQueue
+}
+
+database "Redis\n(Result Backend)" <<queue>> {
+    storage "Task Results" as taskResults
+    storage "Cache" as cache
+}
+
+' ================================================================
+' EXTERNE SYSTEME
+' ================================================================
+cloud "GitHub" <<external>> {
+    storage "Template Repositories" as githubRepos
+}
+
+cloud "OpenStack" <<external>> {
+    storage "VM Instances" as openstackVMs
+    storage "Networks" as openstackNetworks
+    storage "Storage" as openstackStorage
+}
+
+' ================================================================
+' BEZIEHUNGEN - FRONTEND
+' ================================================================
+router --> authViews
+router --> dashboard
+router --> templatesView
+router --> coursesView
+router --> deploymentsView
+router --> adminView
+
+authViews --> authService
+dashboard --> store
+templatesView --> store
+deploymentsView --> store
+coursesView --> store
+
+authService --> apiClient
+store --> apiClient
+apiClient --> fastapi : HTTP/REST
+
+' ================================================================
+' BEZIEHUNGEN - BACKEND
+' ================================================================
+fastapi --> cors
+fastapi --> jwtAuth
+fastapi --> authRouter
+fastapi --> usersRouter
+fastapi --> appsRouter
+fastapi --> deploymentsRouter
+fastapi --> coursesRouter
+
+authRouter --> jwtAuth
+usersRouter --> orm
+appsRouter --> orm
+deploymentsRouter --> celeryClient
+coursesRouter --> orm
+
+celeryClient --> taskQueue : Publish Task
+gitService --> githubRepos : Clone/Pull
+
+orm --> models
+models --> PostgreSQL : SQL
+schemas --> models : Validation
+
+' ================================================================
+' BEZIEHUNGEN - WORKER
+' ================================================================
+celeryWorker --> taskQueue : Consume Task
+celeryWorker --> gitOps
+celeryWorker --> terraformOps
+celeryWorker --> backendClient
+
+gitOps --> githubRepos : Git Clone
+terraformOps --> openstackClient
+openstackClient --> openstackVMs : Deploy
+openstackClient --> openstackNetworks : Configure
+openstackClient --> openstackStorage : Provision
+
+backendClient --> deploymentsRouter : Update Status
+
+celeryWorker --> taskResults : Store Result
+taskResults --> celeryClient : Get Result
+
+' ================================================================
+' LEGENDE
+' ================================================================
+legend right
+    |<#E3F2FD> Frontend |
+    |<#FFF3E0> Backend |
+    |<#F3E5F5> Worker |
+    |<#E8F5E9> Database |
+    |<#FFF9C4> Message Queue |
+    |<#FFEBEE> External Services |
+endlegend
+
+note right of fastapi
+    **API Endpoints:**
+    - POST /auth/register
+    - POST /auth/login
+    - GET /apps
+    - POST /apps
+    - POST /deployments
+    - GET /deployments/{id}
+    - GET /courses
+end note
+
+note bottom of celeryWorker
+    **Celery Tasks:**
+    - clone_repository
+    - deploy_terraform
+    - update_deployment
+    - stop_deployment
+    
+    **Scaling:**
+    - Dynamic worker scaling
+    - One worker per task
+end note
+
+note bottom of PostgreSQL
+    **Datenmodell:**
+    - User (Student/Teacher/Admin)
+    - Course
+    - App (Template)
+    - Deployment
+    - Team, UserGroup
+    - Relationships (Many-to-Many)
+end note
+
+@enduml

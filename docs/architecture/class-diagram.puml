@@ -1,0 +1,374 @@
+@startuml SIX7-Class-Diagram
+
+title SIX7 Click'n Deploy - Klassendiagramm (Datenbank-Schema)
+
+skinparam backgroundColor #FEFEFE
+skinparam class {
+    BackgroundColor #FFFFFF
+    BorderColor #424242
+    ArrowColor #1976D2
+}
+skinparam stereotypeCBackgroundColor #E3F2FD
+
+' ================================================================
+' ENUMERATIONS
+' ================================================================
+enum DeploymentStatus {
+    PENDING
+    RUNNING
+    SUCCESS
+    FAILED
+}
+
+enum UserRole {
+    STUDENT
+    TEACHER
+    ADMIN
+}
+
+' ================================================================
+' CORE ENTITIES
+' ================================================================
+
+class User {
+    ' Attributes
+    - userId: UUID <<PK>>
+    - email: String <<unique>>
+    - username: String
+    - password: String <<hashed>>
+    - role: UserRole
+    - courseId: UUID <<FK>>
+    - created_at: DateTime
+    
+    ' Methods (implizit durch SQLAlchemy)
+    + authenticate(password: String): Boolean
+    + has_permission(action: String): Boolean
+    + get_deployments(): List<Deployment>
+    + get_teams(): List<Team>
+}
+
+class Course {
+    ' Attributes
+    - courseId: UUID <<PK>>
+    - name: String
+    
+    ' Relationships
+    + users: List<User>
+    + user_groups: List<UserGroup>
+    
+    ' Methods
+    + add_user(user: User): void
+    + get_deployments(): List<Deployment>
+    + get_statistics(): CourseStats
+}
+
+class App {
+    ' Attributes
+    - appId: UUID <<PK>>
+    - name: String
+    - description: String
+    - image: Binary <<base64>>
+    - git_link: String <<GitHub URL>>
+    - userId: UUID <<FK>>
+    - created_at: DateTime
+    
+    ' Relationships
+    + user: User
+    + deployments: List<Deployment>
+    
+    ' Methods
+    + clone_repository(): String
+    + validate_terraform(): Boolean
+    + get_deployment_count(): Integer
+}
+
+class Deployment {
+    ' Attributes
+    - deploymentId: UUID <<PK>>
+    - name: String
+    - status: DeploymentStatus
+    - commitHash: String
+    - commitInfo: Text <<JSON/Logs>>
+    - userInputVar: Text <<Terraform Variables JSON>>
+    - userId: UUID <<FK>>
+    - appId: UUID <<FK>>
+    - created_at: DateTime
+    - updated_at: DateTime
+    
+    ' Relationships
+    + user: User
+    + app: App
+    + user_group: UserGroup
+    
+    ' Methods
+    + start_deployment(): String <<celery_task_id>>
+    + stop_deployment(): void
+    + update_status(status: DeploymentStatus): void
+    + get_terraform_outputs(): JSON
+    + rollback(): void
+}
+
+class UserGroup {
+    ' Attributes
+    - userGroupId: UUID <<PK>>
+    - deploymentId: UUID <<FK, unique>>
+    
+    ' Relationships
+    + deployment: Deployment
+    + users: List<User>
+    + courses: List<Course>
+    + teams: List<Team>
+    
+    ' Methods
+    + add_user(user: User): void
+    + remove_user(user: User): void
+    + get_members(): List<User>
+}
+
+class Team {
+    ' Attributes
+    - teamId: UUID <<PK>>
+    - name: String
+    - userGroupId: UUID <<FK>>
+    
+    ' Relationships
+    + user_group: UserGroup
+    + users: List<User>
+    
+    ' Methods
+    + add_member(user: User): void
+    + remove_member(user: User): void
+    + get_members(): List<User>
+}
+
+' ================================================================
+' JUNCTION TABLES (Many-to-Many Relationships)
+' ================================================================
+
+class UserToUserGroup <<JunctionTable>> {
+    - userToUserGroupId: UUID <<PK>>
+    - userId: UUID <<FK>>
+    - userGroupId: UUID <<FK>>
+}
+
+class CourseToUserGroup <<JunctionTable>> {
+    - courseToUserGroupID: UUID <<PK>>
+    - courseId: UUID <<FK>>
+    - userGroupId: UUID <<FK>>
+}
+
+class UserToTeam <<JunctionTable>> {
+    - userToTeamId: UUID <<PK>>
+    - userId: UUID <<FK>>
+    - teamId: UUID <<FK>>
+}
+
+' ================================================================
+' RELATIONSHIPS - CORE ENTITIES
+' ================================================================
+
+' User relationships
+User "0..*" -- "0..1" Course : belongs to >
+User "1" -- "0..*" App : creates >
+User "1" -- "0..*" Deployment : owns >
+
+' App relationships
+App "1" -- "0..*" Deployment : has >
+
+' Deployment relationships
+Deployment "1" -- "0..1" UserGroup : associated with >
+
+' UserGroup relationships
+UserGroup "0..*" -- "0..*" Team : contains >
+
+' ================================================================
+' RELATIONSHIPS - JUNCTION TABLES
+' ================================================================
+
+' User to UserGroup (Many-to-Many)
+User "0..*" -- "0..*" UserToUserGroup
+UserGroup "0..*" -- "0..*" UserToUserGroup
+
+' Course to UserGroup (Many-to-Many)
+Course "0..*" -- "0..*" CourseToUserGroup
+UserGroup "0..*" -- "0..*" CourseToUserGroup
+
+' User to Team (Many-to-Many)
+User "0..*" -- "0..*" UserToTeam
+Team "0..*" -- "0..*" UserToTeam
+
+' ================================================================
+' RELATIONSHIPS - ENUMS
+' ================================================================
+User -- UserRole : has role
+Deployment -- DeploymentStatus : has status
+
+' ================================================================
+' ADDITIONAL CLASSES (Worker/Backend Logic)
+' ================================================================
+
+class CeleryTask <<Service>> {
+    - task_id: String
+    - task_name: String
+    - args: List
+    - kwargs: Dict
+    - status: String
+    - result: Any
+    
+    + send_task(name: String, args: List): String
+    + get_status(task_id: String): String
+    + get_result(task_id: String): Any
+    + revoke_task(task_id: String): void
+}
+
+class GitService <<Service>> {
+    + clone_repository(url: String, deploy_key: String): String
+    + pull_repository(path: String): void
+    + get_commit_info(path: String): Dict
+    + validate_terraform_structure(path: String): Boolean
+}
+
+class TerraformService <<Service>> {
+    + init(working_dir: String): void
+    + plan(working_dir: String, vars: Dict): String
+    + apply(working_dir: String, vars: Dict): Dict
+    + destroy(working_dir: String): void
+    + get_outputs(working_dir: String): Dict
+}
+
+class OpenStackClient <<Service>> {
+    - auth_url: String
+    - username: String
+    - password: String
+    - project_name: String
+    
+    + authenticate(): Token
+    + create_vm(config: Dict): VM
+    + delete_vm(vm_id: String): void
+    + get_vm_status(vm_id: String): String
+    + create_network(config: Dict): Network
+}
+
+' ================================================================
+' SERVICE RELATIONSHIPS
+' ================================================================
+Deployment ..> CeleryTask : triggers
+CeleryTask ..> GitService : uses
+CeleryTask ..> TerraformService : uses
+TerraformService ..> OpenStackClient : deploys to
+
+App ..> GitService : validated by
+
+' ================================================================
+' NOTES
+' ================================================================
+note top of User
+    **Rollen-Konzept:**
+    - STUDENT: Kann eigene Deployments erstellen
+    - TEACHER: Kann Apps erstellen + Kurse verwalten
+    - ADMIN: Vollständige Plattform-Verwaltung
+    
+    **Authentifizierung:**
+    - JWT-basiert
+    - Password mit bcrypt gehasht
+end note
+
+note top of App
+    **Template-Konzept:**
+    - Jede App referenziert GitHub-Repository
+    - Repository enthält Terraform-Code
+    - Deploy-Key für private Repos
+    - Image als Base64-Binary in DB
+    
+    **Beispiel git_link:**
+    "git@github.com:org/k8s-cluster-template.git"
+end note
+
+note top of Deployment
+    **Deployment-Workflow:**
+    1. User wählt App + Konfiguration
+    2. Backend erstellt Deployment (PENDING)
+    3. Celery-Task wird getriggert
+    4. Worker klont Repo + führt Terraform aus
+    5. Status-Updates (RUNNING → SUCCESS/FAILED)
+    
+    **userInputVar JSON-Struktur:**
+    {
+      "vm_count": 3,
+      "flavor": "m1.medium",
+      "network_cidr": "10.0.0.0/24"
+    }
+    
+    **commitInfo (Outputs):**
+    {
+      "vm_ips": ["192.168.1.10", "..."],
+      "ssh_key": "...",
+      "access_url": "https://..."
+    }
+end note
+
+note bottom of UserGroup
+    **Gruppenkonzept:**
+    - Pro Deployment kann eine UserGroup erstellt werden
+    - Ermöglicht gemeinsamen Zugriff auf Deployments
+    - Nützlich für Team-Projekte in Kursen
+    
+    **Beispiel:**
+    - Deployment: "K8s Cluster für Gruppe A"
+    - UserGroup: 5 Studierende
+    - Teams: Frontend-Team, Backend-Team
+end note
+
+note right of CeleryTask
+    **Task-Queue (RabbitMQ):**
+    - Queue: "default"
+    - Broker: RabbitMQ
+    - Backend: Redis
+    
+    **Task-Namen:**
+    - deploy_application
+    - update_deployment
+    - stop_deployment
+    - clone_repository
+    
+    **Worker-Scaling:**
+    - Horizontal skalierbar
+    - Auto-scale basierend auf Queue-Länge
+end note
+
+note bottom of TerraformService
+    **Terraform-Integration:**
+    - Terraform CLI in Worker-Container
+    - State-Backend: Local (oder S3/Remote)
+    - Provider: OpenStack
+    
+    **Typische Ressourcen:**
+    - compute_instance_v2 (VMs)
+    - networking_network_v2 (Networks)
+    - blockstorage_volume_v3 (Storage)
+end note
+
+' ================================================================
+' LEGEND
+' ================================================================
+legend right
+    **Datentypen:**
+    - UUID: Universally Unique Identifier
+    - String: Text (max length defined in DB)
+    - Text: Unbegrenzte Textlänge
+    - Binary: Binärdaten (z.B. Bilder)
+    - DateTime: Timestamp
+    - JSON: Strukturierte Daten als Text
+    
+    **Constraints:**
+    - <<PK>>: Primary Key
+    - <<FK>>: Foreign Key
+    - <<unique>>: Unique Constraint
+    - <<hashed>>: Bcrypt-gehasht
+    
+    **Stereotypes:**
+    - <<Service>>: Business Logic Layer
+    - <<JunctionTable>>: N:M Relationship Table
+endlegend
+
+@enduml
