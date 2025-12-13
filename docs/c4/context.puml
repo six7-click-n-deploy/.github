@@ -1,0 +1,19 @@
+@startuml C4_Context
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+Person(student, "Student")
+Person(teacher, "Teacher")
+Person(admin, "Admin")
+
+System(six7, "SIX7 Click'n Deploy", "App-Store für Lehrveranstaltungen")
+
+System_Ext(github, "GitHub Template Repositories", "Hostet Terraform Templates")
+System_Ext(openstack, "OpenStack Infrastructure", "Bereitstellungsziel")
+
+Rel(student, six7, "nutzt")
+Rel(teacher, six7, "nutzt")
+Rel(admin, six7, "verwaltet")
+Rel(six7, github, "lädt Templates von")
+Rel(six7, openstack, "provisioniert Ressourcen in")
+
+@enduml

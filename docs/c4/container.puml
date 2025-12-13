@@ -1,0 +1,30 @@
+@startuml C4_Container
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+Person(student, "Student")
+Person(teacher, "Teacher")
+Person(admin, "Admin")
+
+System_Boundary(six7, "SIX7 Click'n Deploy") {
+    Container(frontend, "Web Frontend", "Vue SPA", "UI für Nutzer")
+    Container(backend, "Backend API", "FastAPI", "REST API, Auth, Orchestrierung")
+    Container(worker, "Deployment Worker", "Celery + Terraform", "führt Deployments aus")
+    Container(taskInfra, "Task Infrastructure", "RabbitMQ + Redis", "Queue + Statusstore")
+    Container(db, "PostgreSQL Database", "PostgreSQL", "Persistiert Daten")
+}
+
+System_Ext(github, "GitHub Templates", "Git Template Repositories")
+System_Ext(openstack, "OpenStack", "Zielumgebung für Deployments")
+
+Rel(student, frontend, "nutzt")
+Rel(teacher, frontend, "nutzt")
+Rel(admin, frontend, "nutzt")
+
+Rel(frontend, backend, "HTTPS/REST")
+Rel(backend, db, "SQL")
+Rel(backend, taskInfra, "enqueue deployment task")
+Rel(worker, taskInfra, "consume task")
+Rel(worker, github, "clone templates from")
+Rel(worker, openstack, "provision resources")
+
+@enduml

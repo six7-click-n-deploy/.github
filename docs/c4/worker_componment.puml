@@ -1,0 +1,53 @@
+@startuml C4_Component_Worker_Vertical
+skinparam componentStyle rectangle
+skinparam linetype ortho
+skinparam defaultFontSize 11
+
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+' =========================
+' System boundary
+' =========================
+System_Boundary(six7, "SIX7 Click'n Deploy") {
+
+    ' Internal infrastructure (belongs to the system)
+    Container(taskInfra, "Task Infrastructure", "RabbitMQ + Redis", "Queue & Status")
+
+    ' =========================
+    ' Worker container in focus
+    ' =========================
+    Container_Boundary(worker, "Deployment Worker\n(Celery + Terraform)") {
+
+        Component(consumer, "Task Consumer", "Celery")
+        Component(controller, "Deployment Controller")
+
+        Component(terraform, "Terraform Service")
+        Component(git, "Git Service")
+        Component(infra, "Infrastructure Adapter")
+
+        Component(status, "Status Reporter")
+
+        ' Internal flow (top to bottom)
+        Rel(consumer, controller, "start")
+        Rel(controller, terraform, "execute")
+        Rel(controller, git, "clone")
+        Rel(terraform, infra, "provision")
+        Rel(controller, status, "report")
+    }
+}
+
+' =========================
+' External systems
+' =========================
+System_Ext(github, "GitHub Templates")
+System_Ext(openstack, "OpenStack Infrastructure")
+
+' =========================
+' External relations
+' =========================
+Rel(consumer, taskInfra, "consume")
+Rel(status, taskInfra, "write status")
+Rel(git, github, "clone")
+Rel(infra, openstack, "provision")
+
+@enduml
