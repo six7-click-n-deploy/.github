@@ -1,0 +1,135 @@
+@startuml CI/CD Pipeline
+
+!pragma layout smetana
+
+title CI/CD Pipeline & Deployment Process
+
+skinparam backgroundColor #FEFEFE
+skinparam activityBackgroundColor #lightblue
+skinparam activityBorderColor #0066CC
+skinparam activityDiamondBackgroundColor #lightyellow
+skinparam activityDiamondBorderColor #FF9900
+skinparam noteBackgroundColor #FFFFCC
+skinparam noteBorderColor #CCCC00
+
+|Developer|
+start
+partition "Entwicklungsphase" {
+    :Feature Branch erstellen;
+    :Code ändern & committen;
+    :Push auf Feature Branch;
+    :Pull Request erstellen;
+}
+
+|GitHub Actions / CI System|
+partition "PR Quality Checks" {
+    :Linter ausführen\n(Code-Style prüfen);
+    :Formatter ausführen\n(Code formatieren);
+    :Unit Tests ausführen;
+    :Integration Tests;
+    :Security Scan\n(Vulnerability Check);
+    
+    if (PR Checks bestanden?) then (ja)
+        #palegreen:✓ PR kann gemergt werden;
+    else (nein)
+        #lightcoral:✗ Changes requested;
+        stop
+    endif
+}
+
+|Code Reviewer|
+:Code Review durchführen;
+
+if (Review approved?) then (ja)
+    :Pull Request mergen in main;
+else (nein)
+    #lightcoral:✗ Änderungen angefordert;
+    stop
+endif
+
+|GitHub Actions / CI System|
+:Trigger: Push auf main Branch;
+
+partition "Quality Assurance Phase" {
+    :Linter ausführen\n(Code-Style prüfen);
+    :Formatter ausführen\n(Code formatieren);
+    :Unit Tests ausführen;
+    :Integration Tests;
+    :Security Scan\n(Vulnerability Check);
+    
+    if (Alle Checks bestanden?) then (ja)
+        #palegreen:✓ Quality Gate passed;
+    else (nein)
+        #lightcoral:✗ Build abgebrochen;
+        stop
+    endif
+}
+
+partition "Build & Registry Phase" {
+    :Docker Image bauen\n(Frontend, Backend oder Worker);
+    :Image taggen\n(latest, commit-hash);
+    :Push auf GitHub Container Registry\n(ghcr.io);
+    ' note right
+    '     **Warum GitHub Registry?**
+    '     - DHBW OpenStack nur via VPN erreichbar
+    '     - Kein direktes Deployment von GitHub möglich
+    '     - Registry ist öffentlich zugänglich
+    '     - Container können Images pullen
+    ' end note
+}
+
+|DHBW OpenStack Server|
+partition "Production Deployment" {
+    
+    repeat 
+        :Watchtower prüft Registry\n(alle 5 Minuten);
+        note right
+            **Watchtower Konfiguration:**
+            - Polling Mode (kein Webhook nötig)
+            - Vergleicht Image Digest/Hash
+            - Pro Container einzeln prüfen
+        end note
+        
+        :Image-Hash mit lokalem\nContainer vergleichen;
+
+    repeat while (Neues Image gefunden?) is (nein) not (ja)
+
+    :Neues Image von Registry pullen;
+    :Betroffenen Container stoppen;
+    :Container mit neuem Image starten;
+    :Health Check durchführen;
+    
+    if (Container healthy?) then (ja)
+        #palegreen:✓ Update erfolgreich;
+        :Altes Image aufräumen;
+    else (nein)
+        #lightcoral:✗ Deployment fehlgeschlagen;
+        :Container mit altem Image starten;
+        :Monitoring benachrichtigen;
+    endif
+
+        
+}
+
+stop
+
+legend bottom
+    **Architektur-Begründung:**
+    
+    **Problem:** DHBW OpenStack ist nur via VPN erreichbar
+    → GitHub Actions kann nicht direkt deployen
+    
+    **Lösung:** Pull-basiertes Deployment
+    ✓ Watchtower auf dem Server prüft aktiv nach Updates
+    ✓ Server pullt Images selbstständig
+    ✓ Keine eingehenden Verbindungen nötig
+    ✓ VPN-Restriktion umgangen
+    
+    **Vorteile:**
+    - Automatisches Deployment ohne VPN-Zugriff
+    - Zero-Downtime durch Health Checks
+    - Rollback-Mechanismus integriert
+    - Skalierbar für mehrere Services
+endlegend
+
+@enduml
