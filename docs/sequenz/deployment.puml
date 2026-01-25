@@ -65,11 +65,7 @@ activate Database
 Database --> Backend: existing tasks
 deactivate Database
 
-Backend -> Backend: check policy:\nmax 1 active task\n(PENDING or RUNNING)\nper deployment
-note right
-  Raises Exception if
-  active task exists
-end note
+alt no active tasks (PENDING/RUNNING)
 
 Backend -> RabbitMQ: celery_app.send_task(\n"tasks.deploy_application",\nargs=[...])
 activate RabbitMQ
@@ -88,6 +84,16 @@ deactivate Backend
 Frontend --> User: Deployment created
 deactivate Frontend
 
+else active task exists
+
+Backend --> Frontend: 400 Bad Request\n"Active task already running"
+deactivate Backend
+
+Frontend --> User: Error: Cannot create deployment,\nactive task in progress
+deactivate Frontend
+
+end
+
 == Background Task Execution ==
 
 RabbitMQ -> Worker: task message received\nfrom queue
@@ -97,39 +103,28 @@ Worker -> RabbitMQ: emit task-started event\n{type: 'task-started',\nuuid: celer
 activate RabbitMQ
 
 RabbitMQ --> Backend: event received
+deactivate RabbitMQ
 activate Backend
 
-Backend -> Database: get_tasks(\ncelery_task_id)
+Backend -> Database: get_task(\ncelery_task_id)
 activate Database
 Database --> Backend: task object
 deactivate Database
 
 Backend -> Database: update_task(\ntaskId,\n{status: RUNNING,\nstarted_at: utcnow()})
 activate Database
-note right
-  Only task status updated,
-  no deployment status!
-end note
+
 Database --> Backend: updated task
 deactivate Database
 
 deactivate Backend
-deactivate RabbitMQ
 
-Worker -> Worker: get_openstack_credentials()\nfrom clouds.yaml env_vars
+Worker -> Worker: get_openstack_credentials()\nfrom clouds.yaml
 
-Worker -> Git: git_service.clone_release(\ngit_url, deployment_id, tag)
+Worker -> Git: git_service.clone_release(\ndeployment_id, git_url, tag)
 activate Git
 Git --> Worker: repo_path (local directory)
 deactivate Git
-
-Worker -> Worker: extract commit info\nvia GitPython
-note right
-  commit_info = {
-    hash, message,
-    author, date
-  }
-end note
 
 alt packer/template.pkr.hcl exists
 
@@ -137,73 +132,34 @@ alt packer/template.pkr.hcl exists
 
     Worker -> OpenStack: check_image_exists(image_name)
     activate OpenStack
-    note right
-      Uses: openstack image list
-      --name <image_name> -f json
-    end note
     OpenStack --> Worker: (exists: bool, image_id: str)
     deactivate OpenStack
 
     alt image does not exist
         Worker -> Worker: PackerExecutor.init()
-        note right
-          packer init
-        end note
-        
-        Worker -> Worker: PackerExecutor.validate(\ntemplate.pkr.hcl, {})
-        note right
-          packer validate
-        end note
-        
-        Worker -> Worker: merge packer_vars:\nuser_vars["packer"] + image_name
+
+        Worker -> Worker: merge packer_vars:\nuser_vars["packer"] +\nimage_name
+
+        Worker -> Worker: PackerExecutor.validate(\ntemplate.pkr.hcl, packer_vars) 
         
         Worker -> Worker: PackerExecutor.build(\ntemplate.pkr.hcl,\npacker_vars)
-        note right
-          packer build
-          Uploads image to OpenStack
-        end note
-    else image already exists
-        Worker -> Worker: skip Packer build
     end
-
-else no Packer template
-    Worker -> Worker: skip image build phase
 end
 
-Worker -> Worker: terraform_dir =\nrepo_path/terraform
-
 Worker -> Worker: TerraformExecutor.init()
-note right
-  terraform init
-end note
 
 Worker -> Worker: merge terraform_vars:\nuser_vars["terraform"] +\nimage_name + users (teams)
 
 Worker -> Worker: TerraformExecutor.plan(\nvariables: terraform_vars)
-note right
-  terraform plan
-end note
 
 Worker -> OpenStack: TerraformExecutor.apply(\nvariables: terraform_vars)
 activate OpenStack
-note right
-  terraform apply
-  Creates infrastructure:
-  - compute instances
-  - networks
-  - security groups
-  - etc.
-end note
 OpenStack --> Worker: resources created
 deactivate OpenStack
 
-Worker -> Worker: TerraformExecutor.output()
-note right
-  terraform output -json
-  Returns: dict of outputs
-end note
+Worker -> Worker: collect_terraform_outputs()
 
-Worker -> Worker: read terraform.tfstate file
+Worker -> Worker: collect_terraform_state()
 
 Worker -> Worker: git_service.cleanup_repository(\nrepo_path)
 
@@ -215,12 +171,12 @@ note right
     deployment_id: str,
     logs: list[dict],
     tf_state: str,
-    commit_info: dict,
     terraform_outputs: dict
   }
 end note
 
 RabbitMQ --> Backend: event received
+deactivate RabbitMQ
 activate Backend
 
 Backend -> Database: get_tasks(\ncelery_task_id)
@@ -234,7 +190,6 @@ Database --> Backend: updated task
 deactivate Database
 
 deactivate Backend
-deactivate RabbitMQ
 
 deactivate Worker
 
@@ -243,18 +198,14 @@ deactivate Worker
 alt Task fails at any step
 
     Worker -> Worker: catch Exception
+    note right
+        Will be thrown if one of the steps in the Background Task Execution fails
+    end note
 
     Worker -> Worker: collect_terraform_state()\nif terraform_dir exists
-    note right
-      Reads terraform.tfstate
-      even on failure
-    end note
+
 
     Worker -> Worker: collect_terraform_outputs()\nif terraform_dir exists
-    note right
-      Runs terraform output
-      for partial results
-    end note
 
     Worker -> Worker: git_service.cleanup_repository()
 
@@ -268,12 +219,12 @@ alt Task fails at any step
         deployment_id: str,
         logs: list[dict],
         tf_state: str | None,
-        commit_info: dict | None,
         terraform_outputs: dict | None
       }
     end note
 
     RabbitMQ --> Backend: event received
+    deactivate RabbitMQ
     activate Backend
 
     Backend -> Database: get_tasks(\ncelery_task_id)
@@ -293,16 +244,15 @@ alt Task fails at any step
     deactivate Database
 
     deactivate Backend
-    deactivate RabbitMQ
 
 end
 
 == User retrieves deployment status ==
 
-User -> Frontend: GET /deployments/{id}
+User -> Frontend: View deployment details
 activate Frontend
 
-Frontend -> Backend: GET /api/deployments/{id}
+Frontend -> Backend: GET /deployments/{id}
 activate Backend
 
 Backend -> Backend: get_current_user_keycloak()
@@ -312,22 +262,23 @@ Backend -> Backend: ensure_resource_access(\ndeployment.userId, current_user)
 Backend -> Database: get_deployment(\ndeploymentId)\nwith eager loading
 activate Database
 note right
-  SQLAlchemy relationships:
-  - deployment.user
-  - deployment.app
-  - deployment.tasks
-  - deployment.teams
+  deployment.user
+  deployment.app
+  deployment.tasks
+  deployment.teams
 end note
 Database --> Backend: Deployment with relations
 deactivate Database
 
-Backend --> Frontend: DeploymentWithRelations
 note right
-  Frontend derives status
+  status is derived
   from deployment.tasks:
   - Latest task status
   - PENDING/RUNNING/SUCCESS/FAILED
 end note
+
+Backend --> Frontend: DeploymentWithRelations
+
 deactivate Backend
 
 Frontend --> User: Display deployment:\n- status (from tasks)\n- logs (from latest task)\n- outputs (from latest task)
