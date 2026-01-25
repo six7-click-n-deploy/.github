@@ -1,9 +1,5 @@
 // ER-Diagramm basierend auf aktueller Datenbankstruktur
 
-Table alembic_version {
-  version_num varchar(32) [primary key]
-}
-
 Table users {
   userId uuid [primary key]
   email varchar [not null]
