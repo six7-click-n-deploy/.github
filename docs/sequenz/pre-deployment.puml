@@ -17,15 +17,15 @@ participant "Git Repository\n[External System]" as Git
 User -> Frontend: Navigate to\n"Create Deployment" page
 activate Frontend
 
-Frontend -> Backend: GET /api/apps
+Frontend -> Backend: GET /apps
 activate Backend
 
 Backend -> Backend: get_current_user_keycloak()
 
-Backend -> Database: get_apps(\nuser_id, skip, limit)
+Backend -> Database: get_apps()
 activate Database
 note right
-  Students: only own apps
+  Students: only assigned apps
   Teachers/Admins: all apps
 end note
 Database --> Backend: app list
@@ -42,17 +42,15 @@ deactivate Frontend
 User -> Frontend: Select app from list
 activate Frontend
 
-Frontend -> Backend: GET /api/apps/{app_id}
+Frontend -> Backend: GET /apps/{app_id}
 activate Backend
 
 Backend -> Backend: get_current_user_keycloak()
 
-Backend -> Database: get_app(app_id)
+Backend -> Database: get_app()
 activate Database
 Database --> Backend: app object
 deactivate Database
-
-Backend -> Backend: ensure_resource_access(\napp.userId, current_user)
 
 alt app has git_link
 
@@ -70,10 +68,6 @@ alt platform is GitHub
 
 GitService -> Git: GET /repos/{owner}/{repo}/tags
 activate Git
-note right
-  GitHub API:
-  Authorization: token {token}
-end note
 Git --> GitService: tags list
 deactivate Git
 
@@ -86,10 +80,6 @@ else platform is GitLab
 
 GitService -> Git: GET /api/v4/projects/{project}/repository/tags
 activate Git
-note right
-  GitLab API:
-  PRIVATE-TOKEN: {token}
-end note
 Git --> GitService: tags list
 deactivate Git
 
@@ -102,22 +92,17 @@ end
 
 GitService -> GitService: merge tags and releases
 note right
-  Combines:
+  Combines
   - tags: {version, commit, type}
   - releases: {name, description,
-    author, published_at}
+    author, published_at, prerelease, htmlurl}
+  into unified versions[]
 end note
 
 GitService --> Backend: versions[]
 deactivate GitService
 
 Backend -> Backend: app.versions = versions[]
-
-else no git_link
-
-Backend -> Backend: app.versions = []
-
-end
 
 Backend --> Frontend: AppWithVersions
 deactivate Backend
@@ -127,44 +112,40 @@ deactivate Frontend
 
 == Select Version and Load Variables ==
 
-User -> Frontend: Select version/tag
+User -> Frontend: Select version
 activate Frontend
 
-Frontend -> Backend: GET /api/apps/{app_id}/variables\n?version={version}
+Frontend -> Backend: GET /apps/{app_id}/variables\n?version={version}
 activate Backend
 
 Backend -> Backend: get_current_user_keycloak()
 
-Backend -> Database: get_app(app_id)
+Backend -> Database: get_app()
 activate Database
 Database --> Backend: app object
 deactivate Database
 
-Backend -> Backend: ensure_resource_access(\napp.userId, current_user)
-
-Backend -> GitService: clone_release_vars(\ngit_link, version, deployment_id)
+Backend -> GitService: clone_release_vars()
 activate GitService
 
-GitService -> GitService: create temp directory\ndeployment_id =\n"vars_{app_id}_{version}"
+GitService -> GitService: create temp directory
+'\ndeployment_id =\n"vars_{app_id}_{version}"
 
-GitService -> Git: git clone --filter=blob:none\n--sparse {git_url}
+GitService -> Git: git pull 
+' --filter=blob:none\n--sparse {git_url}
 activate Git
 note right
-  Sparse checkout:
+  with sparse checkout:
   - terraform/variables.tf
   - packer/variables.pkr.hcl
 end note
 Git --> GitService: repo_path (local)
 deactivate Git
 
-GitService -> GitService: git sparse-checkout set\nterraform/variables.tf\npacker/variables.pkr.hcl
-
-GitService -> GitService: git checkout {version}
-
 GitService --> Backend: repo_path
 deactivate GitService
 
-Backend -> Backend: parse_terraform_variables(\nrepo_path/terraform/variables.tf)
+Backend -> Backend: parse_terraform_variables()
 note right
   Extracts for each variable:
   - name
@@ -177,13 +158,13 @@ note right
   - source: "terraform"
 end note
 
-Backend -> Backend: parse_packer_variables(\nrepo_path/packer/variables.pkr.hcl)
+Backend -> Backend: parse_packer_variables()
 note right
   Same extraction as Terraform
   - source: "packer"
 end note
 
-Backend -> Backend: cleanup_repository(\nrepo_path)
+Backend -> Backend: cleanup_repository()
 
 Backend --> Frontend: variables[]
 deactivate Backend
@@ -191,23 +172,18 @@ deactivate Backend
 Frontend --> User: Display dynamic\nvariable input form
 deactivate Frontend
 
-== Search and Add Users to Teams ==
+== Search Users ==
 
 User -> Frontend: Search for users\nto add to team
 activate Frontend
 
-Frontend -> Backend: GET /api/users/search\n?query={search_term}&limit=10
+Frontend -> Backend: GET /users/search\n?query={search_term}&limit=10
 activate Backend
 
 Backend -> Backend: get_current_user_keycloak()
 
 Backend -> Database: search_users(\nquery, limit)
 activate Database
-note right
-  Searches in:
-  - username (ILIKE)
-  - email (ILIKE)
-end note
 Database --> Backend: matching users
 deactivate Database
 
@@ -215,56 +191,6 @@ Backend --> Frontend: User[]
 deactivate Backend
 
 Frontend --> User: Display search results
-deactivate Frontend
-
-User -> Frontend: Select users and\ncreate teams
-activate Frontend
-note right
-  User organizes selected
-  users into teams
-  (Team A, Team B, etc.)
-end note
-deactivate Frontend
-
-== Fill Variables and Submit ==
-
-User -> Frontend: Fill all required\nvariables
-activate Frontend
-note right
-  User fills:
-  - Terraform variables
-  - Packer variables
-  - Selects OpenStack resources
-    from dropdowns
-end note
-
-User -> Frontend: Click "Create Deployment"
-
-Frontend -> Frontend: validate form\n(all required fields filled)
-
-Frontend -> Backend: POST /api/deployments\n{name, appId, releaseTag,\nuserInputVar, teams[]}
-activate Backend
-note left
-  userInputVar: JSON string
-  {
-    "packer": {...},
-    "terraform": {...}
-  }
-  
-  teams: [
-    {
-      name: "Team A",
-      userIds: [uuid1, uuid2]
-    }
-  ]
-end note
-
-note over Backend
-  **Continue with Deployment Creation**
-  (see deployment.puml)
-end note
-
-deactivate Backend
 deactivate Frontend
 
 @enduml
