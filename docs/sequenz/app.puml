@@ -1,0 +1,74 @@
+@startuml
+title App erstellen (Backend-Flow)
+
+actor User
+participant "Frontend\n(Client)" as FE
+participant "FastAPI Router" as API
+participant "Auth Dependency\nget_current_user_keycloak" as Auth
+participant "Keycloak" as KC
+database "DB (SQLAlchemy)" as DB
+participant "Git-Service" as Git
+participant "Git Provider\nGitHub" as GP
+participant "CRUD\ncreate_app" as CRUD
+
+User -> FE: Klick "App erstellen"
+activate FE
+FE -> API: POST /apps {name, desc, git_link?}\nBearer Token
+activate API
+API -> Auth: resolve current_user
+activate Auth
+Auth -> KC: Public Key abrufen (für JWT-Verify)
+activate KC
+KC --> Auth: Public Key
+deactivate KC
+Auth -> Auth: JWT offline verifizieren
+Auth -> DB: User per keycloak_id laden
+activate DB
+alt User existiert nicht
+	Auth -> DB: User anlegen (rolle aus Token)
+else Rolle geändert
+	Auth -> DB: Rolle aktualisieren
+end
+deactivate DB
+Auth --> API: current_user
+deactivate Auth
+
+opt git_link gesetzt
+	API -> Git: verify_repository_access(git_link)
+	activate Git
+	Git -> GP: Tags/Access prüfen
+	activate GP
+	alt Zugriff ok
+		Git --> API: success
+		deactivate GP
+	else Zugriff verweigert (privates Repo / keine Berechtigung)
+		Git -> GP: Invitation annehmen / Zugriff erneut prüfen
+		Git --> GP: Retry nach Accept
+		alt Retry erfolgreich
+			Git --> API: success
+			deactivate GP
+		else Retry fehlgeschlagen
+			deactivate GP
+			Git --> API: Fehlerdetails
+			API -> FE: 403 Forbidden
+			FE -> User: Hinweis: Repo privat, Einladung/Token prüfen
+			return
+		end
+	end
+	deactivate Git
+end
+
+API -> CRUD: create_app(db, AppCreate, current_user.userId)
+activate CRUD
+CRUD -> DB: INSERT apps (name, desc, git_link, userId)
+activate DB
+DB --> CRUD: app_id, timestamps
+deactivate DB
+CRUD --> API: App-Objekt
+deactivate CRUD
+API --> FE: 201 AppResponse
+deactivate API
+FE -> User: Erfolgsmeldung + App-Details anzeigen
+deactivate FE
+
+@enduml
