@@ -1,0 +1,257 @@
+@startuml CI/CD Pipeline
+
+!pragma layout smetana
+
+title CI/CD Pipeline & Deployment Process - App Store Platform
+
+skinparam backgroundColor #FEFEFE
+skinparam activityBackgroundColor #lightblue
+skinparam activityBorderColor #0066CC
+skinparam activityDiamondBackgroundColor #lightyellow
+skinparam activityDiamondBorderColor #FF9900
+skinparam noteBackgroundColor #FFFFCC
+skinparam noteBorderColor #CCCC00
+
+|Developer|
+start
+
+partition "Local Development" {
+    :Feature Branch erstellen;
+    :Code ändern;
+    
+    note right
+        **Pre-commit Hooks (automatisch)**
+        - trailing-whitespace
+        - end-of-file-fixer
+        - check-yaml, check-json, check-toml
+        - check-merge-conflict
+        - debug-statements
+        - **Black** (Python Formatting)
+        - **isort** (Import Sorting)
+        - **Ruff** (Linting mit --fix)
+    end note
+    
+    :git commit\n(Pre-commit Hooks ausführen);
+    
+    if (Pre-commit bestanden?) then (ja)
+        :Push auf Feature Branch;
+    else (nein)
+        #lightcoral:✗ Commit blockiert;
+        :Fehler manuell beheben;
+        stop
+    endif
+    
+    :Pull Request erstellen;
+}
+
+|GitHub Actions / CI System|
+
+partition "PR Quality Checks (CI Pipeline)" {
+    :Trigger: PR auf main/develop;
+    
+    :Set up Python 3.11;
+    :Install Poetry;
+    :Install dependencies\n(poetry install --with dev);
+    
+    fork
+        :Run Ruff\n(Linter);
+        note right
+            **Ruff Rules:**
+            - pycodestyle (E, W)
+            - pyflakes (F)
+            - isort (I)
+            - pep8-naming (N)
+            - pyupgrade (UP)
+            - flake8-bugbear (B)
+            - flake8-comprehensions (C4)
+            - flake8-simplify (SIM)
+        end note
+    fork again
+        :Check Black formatting;
+    fork again
+        :Check isort formatting;
+    fork again
+        :Run MyPy\n(Type checking);
+        note right
+            Optional - continue-on-error
+        end note
+    end fork
+    
+    if (Linting & Formatting OK?) then (ja)
+        #palegreen:✓ Lint Job passed;
+    else (nein)
+        #lightcoral:✗ CI failed;
+        stop
+    endif
+    
+    :Run Tests (Matrix Strategy);
+    note right
+        **Python Versions:**
+        - 3.10
+        - 3.11
+        
+        **Test Types:**
+        - Unit Tests
+        - Integration Tests (optional)
+        - Coverage Report (Codecov)
+    end note
+    
+    if (All tests passed?) then (ja)
+        #palegreen:✓ Test Job passed;
+    else (nein)
+        #lightcoral:✗ Tests failed;
+        stop
+    endif
+    
+    :Build Docker Image\n(test build only);
+    note right
+        - Build with Buildx
+        - Cache from GitHub Actions
+        - Save as artifact
+        - **No push on PR**
+    end note
+    
+    if (Docker build OK?) then (ja)
+        #palegreen:✓ All PR checks passed;
+    else (nein)
+        #lightcoral:✗ Build failed;
+        stop
+    endif
+}
+
+|Code Reviewer|
+:Code Review durchführen;
+
+if (Review approved?) then (ja)
+    :Pull Request mergen in main;
+else (nein)
+    #lightcoral:✗ Änderungen angefordert;
+    stop
+endif
+
+|GitHub Actions / CI System|
+:Trigger: Push auf main Branch;
+
+partition "Quality Assurance Phase (Main)" {
+    :Erneut alle Checks ausführen;
+    note right
+        **Quality Gate:**
+        - Lint (Ruff)
+        - Format (Black, isort)
+        - Type Check (MyPy)
+        - Unit + Integration Tests
+        - Coverage Upload
+    end note
+    
+    if (Alle Checks bestanden?) then (ja)
+        #palegreen:✓ Quality Gate passed;
+    else (nein)
+        #lightcoral:✗ Build abgebrochen;
+        stop
+    endif
+}
+
+partition "Build & Registry Phase" {
+    :Docker Image bauen\n(Multi-Platform);
+    note right
+        **Platforms:**
+        - linux/amd64
+        - linux/arm64
+        
+        **Build Context:**
+        - Dockerfile (Production)
+        - Build Cache (GitHub Actions)
+    end note
+    
+    :Image taggen;
+    note right
+        **Tags:**
+        - latest (main branch)
+        - {branch}-{sha}
+        - {branch} (ref)
+        - semver (bei Tags)
+    end note
+    
+    :Push auf GitHub Container Registry;
+    note right
+        **Registry:** ghcr.io
+        **Authentication:** GITHUB_TOKEN
+        
+        **Komponenten:**
+        - ghcr.io/.../backend:latest
+        - ghcr.io/.../frontend:latest
+        - ghcr.io/.../worker:latest
+    end note
+    
+    #palegreen:✓ Images verfügbar in Registry;
+}
+
+|DHBW OpenStack Server|
+
+partition "Production Deployment (Pull-basiert)" {
+    
+    note right
+        **Problem:** DHBW OpenStack nur via VPN erreichbar
+        **Lösung:** Server pullt Images selbst
+        
+        **Deployment-Methode:**
+        - Docker Compose mit ghcr.io Images
+        - Manuelle Image Updates via docker pull
+        - Oder Watchtower für Auto-Update
+    end note
+    
+    :docker pull ghcr.io/.../backend:latest;
+    :docker pull ghcr.io/.../frontend:latest;
+    :docker pull ghcr.io/.../worker:latest;
+    
+    :docker-compose down;
+    :docker-compose up -d;
+    
+    :Health Checks durchführen;
+    note right
+        **Health Checks:**
+        - Backend: /health
+        - Frontend: curl localhost:3000
+        - PostgreSQL: pg_isready
+        - RabbitMQ: rabbitmq-diagnostics ping
+    end note
+    
+    if (Alle Services healthy?) then (ja)
+        #palegreen:✓ Deployment erfolgreich;
+    else (nein)
+        #lightcoral:✗ Deployment fehlgeschlagen;
+        :Logs prüfen;
+        :docker-compose logs;
+        :Rollback durchführen;
+    endif
+}
+
+stop
+
+legend bottom
+    **Architektur-Begründung:**
+    
+    **Problem:** DHBW OpenStack ist nur via VPN erreichbar
+    → GitHub Actions kann nicht direkt deployen
+    
+    **Lösung:** Pull-basiertes Deployment
+    ✓ Server pullt Images manuell oder automatisiert
+    ✓ GitHub Container Registry (ghcr.io) öffentlich zugänglich
+    ✓ Keine eingehenden Verbindungen nötig
+    ✓ VPN-Restriktion umgangen
+    
+    **Code Quality Standards:**
+    - **Linter:** Ruff (pycodestyle, pyflakes, isort, pep8-naming, etc.)
+    - **Formatter:** Black (120 chars), isort
+    - **Type Checker:** MyPy
+    - **Tests:** pytest mit Coverage-Reporting
+    - **Pre-commit:** Automatische Checks vor jedem Commit
+    
+    **CI/CD Tools:**
+    - GitHub Actions für CI/CD
+    - Poetry für Dependency Management
+    - Docker Buildx für Multi-Platform Builds
+    - GitHub Container Registry (ghcr.io)
+endlegend
+
+@enduml
