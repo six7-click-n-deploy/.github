@@ -8,7 +8,6 @@ Table users {
   userId uuid [primary key]
   email varchar [not null]
   username varchar [not null]
-  password varchar
   role varchar [not null, note: 'USER-DEFINED type']
   courseId uuid [ref: > courses.courseId]
   created_at timestamp
