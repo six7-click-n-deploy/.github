@@ -25,7 +25,7 @@ Table user {
   userId uuid [primary key]
   email varchar [unique]
   username varchar
-  password varchar
+  keycloak_id varchar [unique]
   role varchar
   courseId uuid [ref: > course.courseId] // many-to-one: viele User gehören einem Course
   created_at timestamp
