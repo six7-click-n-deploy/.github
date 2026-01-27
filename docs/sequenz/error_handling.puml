@@ -1,0 +1,69 @@
+@startuml Error Handling
+
+!define C4Container
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+title Error Handling - Sequence Diagram
+
+participant "Backend API\n[Container: FastAPI]" as Backend
+database "PostgreSQL\n[Container: Database]" as Database
+queue "RabbitMQ\n[Container: Message Broker]" as RabbitMQ
+participant "Celery Worker\n[Container: Python]" as Worker
+
+alt Task fails at any step
+
+    activate Worker
+    Worker -> Worker: catch Exception
+    note right
+        Will be thrown if one of the steps in the Background Task Execution fails
+    end note
+
+    Worker -> Worker: collect_terraform_state()\nif terraform_dir exists
+
+
+    Worker -> Worker: collect_terraform_outputs()\nif terraform_dir exists
+
+    Worker -> Worker: git_service.cleanup_repository()
+
+    
+
+    Worker -> RabbitMQ: emit task-failed event\n{type: 'task-failed',\nuuid: celery_task_id,\nexception: Failure(...)}
+    deactivate Worker
+    activate RabbitMQ
+    note right
+      Failure exception contains
+      JSON-encoded data:
+      {
+        error: str,
+        deployment_id: str,
+        logs: list[dict],
+        tf_state: str | None,
+        terraform_outputs: dict | None
+      }
+    end note
+
+    RabbitMQ --> Backend: event received
+    deactivate RabbitMQ
+    activate Backend
+
+    Backend -> Database: get_tasks(\ncelery_task_id)
+    activate Database
+    Database --> Backend: task object
+    deactivate Database
+
+    Backend -> Backend: parse exception JSON\nvia regex extraction
+    note right
+      Extracts structured data
+      from Failure exception message
+    end note
+
+    Backend -> Database: update_task(\ntaskId,\n{status: FAILED,\nfinished_at: utcnow(),\nlogs: formatted logs + error,\ntf_state: partial state,\noutputs: partial outputs})
+    activate Database
+    Database --> Backend: updated task
+    deactivate Database
+
+    deactivate Backend
+
+end
+
+@enduml

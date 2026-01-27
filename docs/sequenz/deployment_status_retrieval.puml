@@ -1,0 +1,49 @@
+@startuml Deployment Status Retrieval
+
+!define C4Container
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+title Deployment Status Retrieval - Sequence Diagram
+
+actor "User" as User
+participant "Frontend\n[Container: Vue.js]" as Frontend
+participant "Backend API\n[Container: FastAPI]" as Backend
+database "PostgreSQL\n[Container: Database]" as Database
+queue "RabbitMQ\n[Container: Message Broker]" as RabbitMQ
+
+User -> Frontend: View deployment details
+activate Frontend
+
+Frontend -> Backend: GET /deployments/{id}
+activate Backend
+
+Backend -> Backend: get_current_user_keycloak()
+
+Backend -> Backend: ensure_resource_access(\ndeployment.userId, current_user)
+
+Backend -> Database: get_deployment(\ndeploymentId)\nwith eager loading
+activate Database
+note right
+  deployment.user
+  deployment.app
+  deployment.tasks
+  deployment.teams
+end note
+Database --> Backend: Deployment with relations
+deactivate Database
+
+note right
+  status is derived
+  from deployment.tasks:
+  - Latest task status
+  - PENDING/RUNNING/SUCCESS/FAILED
+end note
+
+Backend --> Frontend: DeploymentWithRelations
+
+deactivate Backend
+
+Frontend --> User: Display deployment:\n- status (from tasks)\n- logs (from latest task)\n- outputs (from latest task)
+deactivate Frontend
+
+@enduml
