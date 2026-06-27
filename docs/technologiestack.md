@@ -28,22 +28,27 @@
 
 ## 4. Deployment & Containerisierung: Docker
 
-**Beschreibung:** Die gesamte Anwendung wird mittels Docker containerisiert. Docker Compose dient zur Orchestrierung der Container. Dazu benötigt unser System folgende Docker Container:
+**Beschreibung:** Die gesamte Anwendung wird mittels Docker containerisiert. Für die lokale Entwicklung kommt `docker-compose.dev.yml` zum Einsatz, das die Services mit hot-reload und gemounteten Source-Dateien startet. Für das Deployment auf der OpenStack-VM existiert `docker-compose.deploy.yml`, das fertige Images aus der GitHub Container Registry (GHCR) zieht und keine Build-Schritte auf der Zielmaschine ausführt.
 
-| Container      | Aufgaben |
-|----------------|----------|
-| **PostgreSQL** | Zentrale Datenhaltung; stellt konsistente und dauerhafte Speicherung sicher |
-| **RabbitMQ**   | Entkoppelt zeitintensive Deployment-Prozesse vom Backend; erhöht Skalierbarkeit und Ausfallsicherheit |
-| **Backend**    | Verarbeitet Benutzeranfragen vom Frontend; authentifiziert und autorisiert Benutzer (Keycloak); persistiert Daten in PostgreSQL; erstellt asynchrone Deployment-Tasks für RabbitMQ |
-| **Worker**     | Konsumiert Deployment-Tasks aus RabbitMQ; klont App-Repositories aus GitHub; führt Packer- und Terraform-Operationen aus; provisioniert Infrastruktur auf OpenStack |
-| **Frontend**   | Ermöglicht Interaktion für Studierende, Dozenten, Powerdozenten und Administratoren; stellt App-Store- und Deployment-Funktionalitäten bereit; kommuniziert ausschließlich über die Backend API |
-| **Keycloak**   | Verwaltung von Benutzern, Rollen und Rechten; Integration in die bestehende DHBW-IAM-Struktur |
+Der Stack besteht aus folgenden Containern:
 
-Die Images werden über eine CI-Pipeline erstellt (Multi-Stage Builds) und in der GitHub Container Registry (GHCR) abgelegt.
+| Container | Aufgaben |
+|---|---|
+| **PostgreSQL** | Zentrale Datenhaltung der Anwendung (Benutzer, Apps, Deployments) |
+| **PostgreSQL (tfstate)** | Separater Postgres-Container ausschließlich für Terraform Remote State. Läuft isoliert im Worker-Netzwerk und ist für das Backend nicht erreichbar |
+| **RabbitMQ** | Entkoppelt zeitintensive Deployment-Prozesse vom Backend; erhöht Skalierbarkeit und Ausfallsicherheit |
+| **Redis** | Celery Result Backend; speichert Task-Ergebnisse im Arbeitsspeicher |
+| **Keycloak** | Identity Provider; Verwaltung von Benutzern, Rollen und Rechten; OIDC-basierte Authentifizierung für Frontend und Backend |
+| **Backend** | REST-API; nimmt Anfragen entgegen, validiert Tokens gegen Keycloak, persistiert Daten und dispatcht Deployment-Tasks an RabbitMQ |
+| **Worker** | Konsumiert Tasks aus RabbitMQ; klont App-Repositories; führt Packer und Terraform aus; provisioniert Infrastruktur auf OpenStack |
+| **Frontend** | Vue 3 SPA, ausgeliefert von nginx im Container; kommuniziert ausschließlich über die Backend API |
+| **nginx** | Reverse Proxy und TLS-Terminierung. Leitet eingehende HTTPS-Requests (Port 443) an Frontend, Backend (`/api/`) und Keycloak (`/realms/`) weiter. Das Self-Signed-Zertifikat wird von Ansible beim ersten Deploy erzeugt und bei Folgedeploys wiederverwendet |
 
-**Begründung:** Docker garantiert Portabilität: Die Umgebung ist in Development, Staging und Production absolut identisch, was das Risiko von "Works on my machine"-Fehlern eliminiert. Multi-Stage Builds sorgen dafür, dass Build-Tools nicht im finalen Image landen, was die Images klein und sicher hält. Es wurde sich bewusst für Docker Compose und gegen Kubernetes (K8s) entschieden. Für Single-Host-Deployments ist K8s unnötig komplex ("Overhead"). Docker Compose bietet hier eine schlanke, effiziente Lösung, die leichter zu warten ist. Kubernetes bleibt eine Option für die Zukunft, falls dynamische Skalierung über mehrere Nodes hinweg notwendig wird.
+**Deploymentprozess:** Ein Push auf `main` in einem der Service-Repositories (Backend, Frontend, Worker) löst zunächst die jeweilige CI-Pipeline aus, die das Image baut und in die GHCR pusht. Sobald das erfolgreich abgeschlossen ist, triggert die Pipeline automatisch den Deployment-Workflow im deployment-Repository. Terraform provisioniert die OpenStack-VM (oder stellt sicher, dass sie läuft) und gibt die IP-Adresse aus. Anschließend führt Ansible das Deployment-Playbook auf der VM aus: es synchronisiert das Repository, schreibt die `.env`-Datei aus dem GitHub-Secret, rendert `keycloak/realm-export.json.j2` mit der öffentlichen URL der VM, zieht die GHCR-Images und startet den Stack via `docker compose up`. Datenbankmigrationen werden als expliziter Ansible-Task ausgeführt, damit Fehler sichtbar im Pipeline-Log erscheinen und nicht im Compose-Output verschwinden.
 
-> **ToDo:** Überarbeiten und Deploymentprozess überarbeiten
+Der Keycloak-Realm wird beim ersten Hochfahren automatisch aus `realm-export.json` importiert, das Ansible zuvor mit der korrekten APP_BASE_URL befüllt hat. Dadurch entfällt manuelles Klicken im Admin-UI bei jedem frischen Deploy.
+
+**Begründung:** Docker garantiert Portabilität: Entwicklung und Deployment laufen in identischen Umgebungen, was die Gefahr umgebungsbedingter Fehler deutlich reduziert. Multi-Stage Builds halten die Images klein und frei von Build-Werkzeugen. Gegen Kubernetes wurde bewusst entschieden, da der Konfigurationsaufwand für diesen Projektrahmen unverhältnismäßig wäre. Docker Compose ist hier die schlanke, wartbare Lösung. Kubernetes bleibt eine Option, falls zukünftig Skalierung über mehrere Server hinweg notwendig wird.
 
 ---
 
