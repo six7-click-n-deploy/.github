@@ -16,13 +16,11 @@
 
 ---
 
-## 3. Worker: Asynchrone Verarbeitung — Celery & RabbitMQ
+## 3. Worker: Asynchrone Verarbeitung — Celery, RabbitMQ & Redis
 
-**Beschreibung:** Um langlaufende Prozesse zu handhaben, wird eine Task-Queue-Architektur eingesetzt. Celery übernimmt hierbei die Verwaltung der Hintergrundaufgaben, während RabbitMQ als Message Broker fungiert.
+**Beschreibung:** Um langlaufende Prozesse zu handhaben, wird eine Task-Queue-Architektur eingesetzt. Celery übernimmt die Verwaltung der Hintergrundaufgaben und setzt dabei auf zwei spezialisierte Infrastruktur-Komponenten: **RabbitMQ** als Message Broker (Aufgaben werden vom Backend an den Worker zugestellt) und **Redis** als Result Backend (Task-Ergebnisse + Live-Status werden für Abfragen aus dem Frontend zwischengespeichert). Zusätzlich dient Redis als Pub/Sub-Layer für die Server-Sent-Events, über die das Frontend Deployment-Logs in Echtzeit empfängt.
 
-**Begründung:** Durch Celery wird die Ausführung entkoppelt: Die API nimmt den Auftrag lediglich entgegen (im Millisekunden-Bereich), während der Worker ihn im Hintergrund abarbeitet. Dies hält die UI reaktionsfähig (responsive). Als Message Broker wird RabbitMQ anstelle von Redis eingesetzt, da RabbitMQ speziell für zuverlässige Task-Verarbeitung ausgelegt ist. Durch persistente Queues, Acknowledgements und Retry-Mechanismen stellt RabbitMQ sicher, dass langlaufende Deployment-Tasks auch bei Worker-Ausfällen nicht verloren gehen. Redis ist primär ein In-Memory-Datenspeicher und Cache und bietet für komplexe, kritische Hintergrundprozesse geringere Zuverlässigkeitsgarantien. Daher wurde RabbitMQ als robustere Lösung für produktive Task-Queue-Szenarien gewählt.
-
-> **ToDo:** Redis mit aufnehmen
+**Begründung:** Durch Celery wird die Ausführung entkoppelt: Die API nimmt den Auftrag im Millisekunden-Bereich entgegen, während der Worker ihn im Hintergrund abarbeitet. Dies hält die UI reaktionsfähig. RabbitMQ und Redis übernehmen dabei bewusst unterschiedliche Rollen, weil ihre Stärken komplementär sind: RabbitMQ ist auf zuverlässige Task-Zustellung ausgelegt (persistente Queues, Acknowledgements, Retry-Mechanismen) und stellt sicher, dass Deployment-Tasks auch bei Worker-Ausfällen nicht verloren gehen — diese Garantien wären bei einem reinen Redis-Broker schwächer. Redis hingegen ist als schneller In-Memory-Speicher genau richtig für ephemere Daten: Task-Ergebnisse, die das Frontend kurz nach Abschluss abfragt, sowie das Pub/Sub-Forwarding der Live-Log-Events an die SSE-Streams. Die Kombination ist gegenüber einer reinen RabbitMQ- oder reinen Redis-Lösung robuster und gleichzeitig performanter.
 
 ---
 
