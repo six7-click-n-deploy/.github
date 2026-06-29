@@ -18,3 +18,6 @@ Unser AppStore soll diese Szenarien als **vorkonfigurierte “Apps”** bereitst
 - **Dozierende:** einfache Bereitstellung und Verwaltung von Kursumgebungen  
 - **Studierende:** verlässlicher Zugriff auf Übungsumgebungen im Kurskontext  
 - **Administratoren:** Support-Möglichkeit, Kontrolle und Ressourcengrenzen (Quotas)
+
+## Lokales Setup
+Eine Schritt-für-Schritt-Anleitung zum lokalen Aufsetzen der Entwicklungsumgebung findet sich in der [Setup-Dokumentation](https://github.com/six7-click-n-deploy/deployment#lokales-setup).
