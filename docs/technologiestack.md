@@ -28,7 +28,7 @@
 
 ## 4. Deployment & Containerisierung: Docker
 
-**Beschreibung:** Die gesamte Anwendung wird mittels Docker containerisiert. Für die lokale Entwicklung kommt `docker-compose.dev.yml` zum Einsatz, das die Services mit hot-reload und gemounteten Source-Dateien startet. Für das Deployment auf der OpenStack-VM existiert `docker-compose.deploy.yml`, das fertige Images aus der GitHub Container Registry (GHCR) zieht und keine Build-Schritte auf der Zielmaschine ausführt.
+**Beschreibung:** Die gesamte Anwendung wird mittels Docker containerisiert. Für die lokale Entwicklung kommt `docker-compose.dev.yml` zum Einsatz, das die Services mit hot-reload und gemounteten Source-Dateien startet. Für das Deployment auf der OpenStack-VM existiert `docker-compose.staging.yml` (CD-Pipeline, Image-Versionen festlegbar) bzw. `docker-compose.prod.yml` (always-latest aus der Registry); beide ziehen fertige Images aus der GitHub Container Registry (GHCR) und führen keine Build-Schritte auf der Zielmaschine aus.
 
 Der Stack besteht aus folgenden Containern:
 
