@@ -29,7 +29,7 @@
 
 ## 3. Admin
 
-## Bereich für Administrator*innen: App-Freigaben verwalten
+## App-Freigaben verwalten
 
 Als Admin verfügen Sie über erweiterte Rechte, um neue App-Versionen zu prüfen, freizugeben oder zu sperren. 
 
@@ -42,6 +42,18 @@ Wenn Sie die Freigabe-Verwaltung öffnen, sehen Sie standardmäßig **nur Apps, 
 * **Hinweis zu privaten Apps:** Hier werden keine ausstehenden Freigaben angezeigt. Erst wenn eine App veröffentlicht wird, können Versionen zur Freigabe eingereicht werden.
 * **Detailansicht:** Klicken Sie auf eine App in der Liste, um alle eingereichten Versionen und deren aktuellen Status einzusehen.
 
+<figure>
+  <img src="img/Genehmigen_Ablehnen.png" alt="Freigabe-Verwaltungsseite" width="100%">
+  <figcaption>Freigabe-Verwaltung: Übersicht der ausstehenden App-Freigaben</figcaption>
+</figure>
+
+
+<figure>
+  <img src="img/Freigabe_Verwaltung_Filter_aus.png" alt="Freigabe-Verwaltungsseite: Alle Apps" width="100%">
+  <figcaption>Freigabe-Verwaltung: Deaktivierter Filter</figcaption>
+</figure>
+
+
 ---
 
 ### App-Versionen freigeben oder ablehnen
@@ -52,7 +64,14 @@ Sie haben drei Möglichkeiten, wie Sie mit eingereichten oder bereits freigegebe
 | :--- | :--- | :--- |
 | **Genehmigen** | Klicken Sie bei der ausstehenden Version auf **Genehmigen**. | Die Version wird sofort für alle Nutzer freigeschaltet. |
 | **Ablehnen** | Klicken Sie auf **Ablehnen**. <br>**Pflicht:** Sie müssen im Freitextfeld einen **Ablehnungsgrund** angeben. | Die Version wird nicht freigeschaltet. Der zugehörige Nutzer sieht Ihre Begründung. |
-| **Widerrufen** | Sie können eine bereits genehmigte Version jederzeit nachträglich sperren.<br>**Pflicht:** Sie müssen einen **Widerrufsgrund** (z. B. eine Sicherheitslücke) angeben. | Die Version wird für alle Nutzer sofort gesperrt. |
+| **Widerrufen** | Sie können eine bereits genehmigte Version durch Klick auf **Widerrufen** jederzeit nachträglich sperren.<br>**Pflicht:** Sie müssen einen **Widerrufsgrund** (z. B. eine Sicherheitslücke) angeben. | Die Version wird für alle Nutzer sofort gesperrt. |
+
+
+<figure>
+  <img src="img/Freigabe_widerrufen.png" alt="Freigabe-Verwaltungsseite: Freigabe widerrufen" width="100%">
+  <figcaption>Freigabe-Verwaltung: Freigabe widerrufen</figcaption>
+</figure>
+
 
 > **Gut zu wissen:** Sowohl abgelehnte als auch widerrufene Versionen sind nicht endgültig verloren. Sie können diese zu einem späteren Zeitpunkt jederzeit manuell **erneut genehmigen**, sobald die Probleme behoben wurden.
 
