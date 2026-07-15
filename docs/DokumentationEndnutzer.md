@@ -1,5 +1,16 @@
 # Endnutzer Dokumentation
 
+### Autoren
+1. **Tom Weber** *(Dokumentationsteil: Student)*
+2. **Paulina Clauss** *(Dokumentationsteil: Lehrer)*
+3. **Monika Piano** *(Dokumentationsteil: Admin)*
+
+### Reviewer (Prüfer)
+1. **[Name Reviewer 1]**
+2. **[Name Reviewer 2]** 
+
+---
+
 ## 1. Studenten
 
 **Beschreibung:** Das Frontend wird als Single Page Application (SPA) mit Vue.js 3 realisiert. Für das State Management (die Verwaltung des globalen Anwendungszustands) kommt Pinia zum Einsatz, während Axios die Kommunikation mit dem Backend übernimmt. Das Styling erfolgt utility-first mittels Tailwind CSS.
