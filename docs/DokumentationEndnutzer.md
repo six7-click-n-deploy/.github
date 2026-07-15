@@ -48,8 +48,10 @@ Wenn Sie die Freigabe-Verwaltung öffnen, sehen Sie standardmäßig **nur Apps, 
 </figure>
 
 
+
+
 <figure>
-  <img src="img/Freigabe_Verwaltung_Filter_aus.png" alt="Freigabe-Verwaltungsseite: Alle Apps" width="100%">
+  <img src="img/Freigabe_Verwaltung_Filter_aus.png" alt="Freigabe-Verwaltungsseite: Alle Apps" width="80%">
   <figcaption>Freigabe-Verwaltung: Deaktivierter Filter</figcaption>
 </figure>
 
@@ -68,9 +70,11 @@ Sie haben drei Möglichkeiten, wie Sie mit eingereichten oder bereits freigegebe
 
 
 <figure>
-  <img src="img/Freigabe_widerrufen.png" alt="Freigabe-Verwaltungsseite: Freigabe widerrufen" width="100%">
+  <img src="img/Freigabe_widerrufen.png" alt="Freigabe-Verwaltungsseite: Freigabe widerrufen" width="80%">
   <figcaption>Freigabe-Verwaltung: Freigabe widerrufen</figcaption>
 </figure>
+
+
 
 
 > **Gut zu wissen:** Sowohl abgelehnte als auch widerrufene Versionen sind nicht endgültig verloren. Sie können diese zu einem späteren Zeitpunkt jederzeit manuell **erneut genehmigen**, sobald die Probleme behoben wurden.
