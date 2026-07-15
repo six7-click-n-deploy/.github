@@ -29,8 +29,31 @@
 
 ## 3. Admin
 
-**Beschreibung:** Um langlaufende Prozesse zu handhaben, wird eine Task-Queue-Architektur eingesetzt. Celery übernimmt die Verwaltung der Hintergrundaufgaben und setzt dabei auf zwei spezialisierte Infrastruktur-Komponenten: **RabbitMQ** als Message Broker (Aufgaben werden vom Backend an den Worker zugestellt) und **Redis** als Result Backend (Task-Ergebnisse + Live-Status werden für Abfragen aus dem Frontend zwischengespeichert). Zusätzlich dient Redis als Pub/Sub-Layer für die Server-Sent-Events, über die das Frontend Deployment-Logs in Echtzeit empfängt.
+## Bereich für Administrator*innen: App-Freigaben verwalten
 
-**Begründung:** Durch Celery wird die Ausführung entkoppelt: Die API nimmt den Auftrag im Millisekunden-Bereich entgegen, während der Worker ihn im Hintergrund abarbeitet. Dies hält die UI reaktionsfähig. RabbitMQ und Redis übernehmen dabei bewusst unterschiedliche Rollen, weil ihre Stärken komplementär sind: RabbitMQ ist auf zuverlässige Task-Zustellung ausgelegt (persistente Queues, Acknowledgements, Retry-Mechanismen) und stellt sicher, dass Deployment-Tasks auch bei Worker-Ausfällen nicht verloren gehen — diese Garantien wären bei einem reinen Redis-Broker schwächer. Redis hingegen ist als schneller In-Memory-Speicher genau richtig für flüchtige Daten: Task-Ergebnisse, die das Frontend kurz nach Abschluss abfragt, sowie das Pub/Sub-Forwarding der Live-Log-Events an die SSE-Streams. Die Kombination ist gegenüber einer reinen RabbitMQ- oder reinen Redis-Lösung robuster und gleichzeitig performanter.
+Als Admin verfügen Sie über erweiterte Rechte, um neue App-Versionen zu prüfen, freizugeben oder zu sperren. 
+
+### Die Freigabe-Verwaltung im Überblick
+
+Wenn Sie die Freigabe-Verwaltung öffnen, sehen Sie standardmäßig **nur Apps, für die aktuell eine Freigabe beantragt wurde**. 
+
+* **Neue Versionen prüfen:** Liegen ausstehende Einreichungen vor, werden diese hier aufgelistet. Sie können jede Version entweder **genehmigen** oder **ablehnen**.
+* **Filter ausschalten (Alle Apps anzeigen):** Wenn Sie oben rechts den Filter deaktivieren, sehen Sie alle öffentlichen und privaten Apps. 
+* **Hinweis zu privaten Apps:** Hier werden keine ausstehenden Freigaben angezeigt. Erst wenn eine App veröffentlicht wird, können Versionen zur Freigabe eingereicht werden.
+* **Detailansicht:** Klicken Sie auf eine App in der Liste, um alle eingereichten Versionen und deren aktuellen Status einzusehen.
+
+---
+
+### App-Versionen freigeben oder ablehnen
+
+Sie haben drei Möglichkeiten, wie Sie mit eingereichten oder bereits freigegebenen Versionen verfahren können:
+
+| Aktion | Ablauf & Voraussetzungen | Auswirkung |
+| :--- | :--- | :--- |
+| **Genehmigen** | Klicken Sie bei der ausstehenden Version auf **Genehmigen**. | Die Version wird sofort für alle Nutzer freigeschaltet. |
+| **Ablehnen** | Klicken Sie auf **Ablehnen**. <br>**Pflicht:** Sie müssen im Freitextfeld einen **Ablehnungsgrund** angeben. | Die Version wird nicht freigeschaltet. Der zugehörige Nutzer sieht Ihre Begründung. |
+| **Widerrufen** | Sie können eine bereits genehmigte Version jederzeit nachträglich sperren.<br>**Pflicht:** Sie müssen einen **Widerrufsgrund** (z. B. eine Sicherheitslücke) angeben. | Die Version wird für alle Nutzer sofort gesperrt. |
+
+> **Gut zu wissen:** Sowohl abgelehnte als auch widerrufene Versionen sind nicht endgültig verloren. Sie können diese zu einem späteren Zeitpunkt jederzeit manuell **erneut genehmigen**, sobald die Probleme behoben wurden.
 
 ---
