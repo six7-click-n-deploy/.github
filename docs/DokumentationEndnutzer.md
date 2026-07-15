@@ -42,19 +42,16 @@ Wenn Sie die Freigabe-Verwaltung öffnen, sehen Sie standardmäßig **nur Apps, 
 * **Hinweis zu privaten Apps:** Hier werden keine ausstehenden Freigaben angezeigt. Erst wenn eine App veröffentlicht wird, können Versionen zur Freigabe eingereicht werden.
 * **Detailansicht:** Klicken Sie auf eine App in der Liste, um alle eingereichten Versionen und deren aktuellen Status einzusehen.
 
-<figure>
-  <img src="img/Genehmigen_Ablehnen.png" alt="Freigabe-Verwaltungsseite" width="100%">
-  <figcaption>Freigabe-Verwaltung: Übersicht der ausstehenden App-Freigaben</figcaption>
+<figure style="margin-bottom: 30px;">
+  <img src="img/Genehmigen_Ablehnen.png" alt="Freigabe-Verwaltungsseite" width="80%">
+  <figcaption style="font-size: 0.9em; color: #555;">Freigabe-Verwaltung: Übersicht der ausstehenden App-Freigaben</figcaption>
 </figure>
 
 
-
-
-<figure>
+<figure style="margin-bottom: 30px;">
   <img src="img/Freigabe_Verwaltung_Filter_aus.png" alt="Freigabe-Verwaltungsseite: Alle Apps" width="80%">
-  <figcaption>Freigabe-Verwaltung: Deaktivierter Filter</figcaption>
+  <figcaption style="font-size: 0.9em; color: #555;">Freigabe-Verwaltung: Deaktivierter Filter</figcaption>
 </figure>
-
 
 ---
 
@@ -68,13 +65,10 @@ Sie haben drei Möglichkeiten, wie Sie mit eingereichten oder bereits freigegebe
 | **Ablehnen** | Klicken Sie auf **Ablehnen**. <br>**Pflicht:** Sie müssen im Freitextfeld einen **Ablehnungsgrund** angeben. | Die Version wird nicht freigeschaltet. Der zugehörige Nutzer sieht Ihre Begründung. |
 | **Widerrufen** | Sie können eine bereits genehmigte Version durch Klick auf **Widerrufen** jederzeit nachträglich sperren.<br>**Pflicht:** Sie müssen einen **Widerrufsgrund** (z. B. eine Sicherheitslücke) angeben. | Die Version wird für alle Nutzer sofort gesperrt. |
 
-
-<figure>
+<figure style="margin-bottom: 30px;">
   <img src="img/Freigabe_widerrufen.png" alt="Freigabe-Verwaltungsseite: Freigabe widerrufen" width="80%">
-  <figcaption>Freigabe-Verwaltung: Freigabe widerrufen</figcaption>
+  <figcaption style="font-size: 0.9em; color: #555;">Freigabe-Verwaltung: Freigabe widerrufen</figcaption>
 </figure>
-
-
 
 
 > **Gut zu wissen:** Sowohl abgelehnte als auch widerrufene Versionen sind nicht endgültig verloren. Sie können diese zu einem späteren Zeitpunkt jederzeit manuell **erneut genehmigen**, sobald die Probleme behoben wurden.
