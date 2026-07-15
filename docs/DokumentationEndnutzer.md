@@ -35,7 +35,7 @@ Als Admin verfügen Sie über erweiterte Rechte, um neue App-Versionen zu prüfe
 
 ### Die Freigabe-Verwaltung im Überblick
 
-Wenn Sie die Freigabe-Verwaltung öffnen, sehen Sie standardmäßig **nur Apps, für die aktuell eine Freigabe beantragt wurde**. 
+Wenn Sie die Freigabe-Verwaltung öffnen, sehen Sie standardmäßig nur Apps, für die aktuell eine Freigabe beantragt wurde. 
 
 * **Neue Versionen prüfen:** Liegen ausstehende Einreichungen vor, werden diese hier aufgelistet. Sie können jede Version entweder **genehmigen** oder **ablehnen**.
 * **Filter ausschalten (Alle Apps anzeigen):** Wenn Sie oben rechts den Filter deaktivieren, sehen Sie alle öffentlichen und privaten Apps. 
@@ -62,8 +62,8 @@ Sie haben drei Möglichkeiten, wie Sie mit eingereichten oder bereits freigegebe
 | Aktion | Ablauf & Voraussetzungen | Auswirkung |
 | :--- | :--- | :--- |
 | **Genehmigen** | Klicken Sie bei der ausstehenden Version auf **Genehmigen**. | Die Version wird sofort für alle Nutzer freigeschaltet. |
-| **Ablehnen** | Klicken Sie auf **Ablehnen**. <br>**Pflicht:** Sie müssen im Freitextfeld einen **Ablehnungsgrund** angeben. | Die Version wird nicht freigeschaltet. Der zugehörige Nutzer sieht Ihre Begründung. |
-| **Widerrufen** | Sie können eine bereits genehmigte Version durch Klick auf **Widerrufen** jederzeit nachträglich sperren.<br>**Pflicht:** Sie müssen einen **Widerrufsgrund** (z. B. eine Sicherheitslücke) angeben. | Die Version wird für alle Nutzer sofort gesperrt. |
+| **Ablehnen** | Klicken Sie auf "Ablehnen". <br>**Pflicht:** Sie müssen im Freitextfeld einen Ablehnungsgrund angeben. | Die Version wird nicht freigeschaltet. Der zugehörige Nutzer sieht Ihre Begründung. |
+| **Widerrufen** | Sie können eine bereits genehmigte Version durch Klick auf "Widerrufen" jederzeit nachträglich sperren.<br>**Pflicht:** Sie müssen einen Widerrufsgrund (z. B. eine Sicherheitslücke) angeben. | Die Version wird für alle Nutzer sofort gesperrt. |
 
 <figure style="margin-bottom: 30px;">
   <img src="img/Freigabe_widerrufen.png" alt="Freigabe-Verwaltungsseite: Freigabe widerrufen" width="80%">
