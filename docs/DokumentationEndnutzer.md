@@ -25,6 +25,17 @@
 
 **Begründung:** Der Fokus liegt auf Performance und modernen Standards. Pydantic validiert alle Dateneingänge rigoros und generiert automatisch die OpenAPI-Dokumentation (Swagger UI), was die Integration für Frontend-Entwickler erleichtert. PostgreSQL wurde aufgrund seiner Stabilität (ACID-Compliance) und der Unterstützung für JSONB-Datentypen gewählt, was Flexibilität bei semi-strukturierten Daten erlaubt. Die Entscheidung fiel bewusst gegen klassische Frameworks wie Django oder Flask. FastAPI ist durch die native Unterstützung von asynchroner Programmierung (Async/Await) und die Nutzung von Starlette deutlich performanter. Zudem bietet SQLAlchemy 2.0 im Gegensatz zu simpleren ORMs die Flexibilität, nahtlos zwischen objektorientiertem Zugriff und Raw SQL zu wechseln.
 
+## Kurse verwalten
+
+In der Kursverwaltung sehen Sie standardmäßig alle Kurse, die Sie selbst erstellt haben oder in denen Sie Mitglied sind.
+
+* **Neue Kurse anlegen:** Gibt es noch keine Kurse, klicken Sie einfach auf **Kurs erstellen** oder **Ersten Kurs anlegen**. Tragen Sie im folgenden Fenster den gewünschten Namen ein und bestätigen Sie mit **Erstellen**.
+* **Mitglieder hinzufügen:** Öffnen Sie die Detailseite eines Kurses über **Details ansehen** oder direkt nach dem Erstellen. Mit einem Klick auf **Mitglied hinzufügen** öffnet sich eine Suchmaske. Hier können Sie gezielt nach E-Mail-Adressen oder Nutzernamen suchen, die gewünschten Studierenden auswählen und über **Hinzufügen** in den Kurs aufnehmen.
+**Wichtig:** Jeder Studierende kann immer nur in *einem* Kurs sein. Fügen Sie jemanden hinzu, der bereits in einem anderen Kurs eingetragen ist, wird die Person automatisch in den neuen Kurs verschoben und aus dem bisherigen entfernt.
+**Wichtig:** In der Suche tauchen nur Studierende auf, die im System (Keycloak) mit der entsprechenden Rolle hinterlegt sind und sich bereits mindestens einmal eingeloggt haben.
+* **Mitglieder entfernen:** Auf der Detailseite des Kurses sehen Sie eine Übersicht aller aktuellen Mitglieder. Rechts neben jedem Eintrag finden Sie die zugewiesene Rolle sowie ein Symbol, um das Mitglied aus dem Kurs zu entfernen.
+* **Kursnamen bearbeiten:** Oben auf der Detailseite finden Sie neben dem Kursnamen ein Stift-Symbol. Klicken Sie darauf, um den Namen zu ändern. Bestätigen Sie Ihre Eingabe mit dem Haken oder verwerfen Sie die Änderung mit dem Kreuz.
+
 ---
 
 ## 3. Admin
