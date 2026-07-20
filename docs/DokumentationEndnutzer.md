@@ -227,10 +227,11 @@ In der Kursverwaltung siehst du standardmäßig alle Kurse, die du selbst erstel
 2. Wähle eine deiner bereits angelegten Apps aus, indem du auf **Details & Deployment** klickst. Auf der nun geöffneten App-Detail-Seite wählst du rechts die gewünschte Version aus und klickst auf **Jetzt Deployen**. 
 3. Vergib einem Namen für das Deployment und füge anschließend einen kompletten Kurs oder einzelne Studenten hinzu. Auf der Linken Seite findest du, je nach ausgewählter Ansicht die verfügbaren Kurse oder eine Suchfunktion. Auf der rechten Seite werden die ausgewählten Studenten aufgelistet. Über das rote Kreuz neben dem jeweiligen Namen können Personen wieder entfernt werden. Klicke auf **Weiter**, um zum nächsten Schritt zu gelangen.
 4. Auf der Verteilungs-Seite kannst du nun die Gruppen bilden. Hierfür gibt es drei Möglichkeiten:
-  * **Eine Gruppe:** Alle ausgewählten Studenten werden in einer einzigen Gruppe zusammengefasst.
-  * **Jeder Nutzer einzeln:** Jeder Student bildet eine eigene Gruppe.
-  * **Individuell:** Hier kannst du auf der rechten Seite über die Plus **+** und Minus **-** Buttons eine beliebige Anzahl an Gruppen festlegen.
-Du kannst die Studenten über den Button **Zufall** automatisch verteilen lassen oder sie manuell per Drag-and-Drop zuweisen. Über den Button **Zurücksetzen** lässt sich die Zuteilung wieder in den Anfangszustand versetzen. Bestätige deine Eingabe mit **Weiter**.
+   * **Eine Gruppe:** Alle ausgewählten Studenten werden in einer einzigen Gruppe zusammengefasst.
+   * **Jeder Nutzer einzeln:** Jeder Student bildet eine eigene Gruppe.
+   * **Individuell:** Hier kannst du auf der rechten Seite über die Plus **+** und Minus **-** Buttons eine beliebige Anzahl an Gruppen festlegen.
+
+   Du kannst die Studenten über den Button **Zufall** automatisch verteilen lassen oder sie manuell per Drag-and-Drop zuweisen. Über den Button **Zurücksetzen** lässt sich die Zuteilung wieder in den Anfangszustand versetzen. Bestätige deine Eingabe mit **Weiter**.
 5. Im Schritt Variablen können nun spezifische Packer- oder Terraform-Variablen angepasst werden (abhängig von der jeweiligen App). Standardmäßig sind alle Variablen mit Standardwerten (Defaults) vorausgefüllt, sodass ein Deployment auch ohne Änderungen problemlos durchgeführt werden kann. Für die Variablen stehen Dropdown-Felder zur Verfügung. Je nach App hast du zudem die Möglichkeit, den Gruppen oder Nutzern Dateien per Drag-and-Drop oder per Klick anzufügen. Klicke auf **Weiter** um in den nächsten Schritt zu gelangen.
 6. Den Abschluss des Deployment-Prozesses bildet die Übersichts-Seite. Hier findest du eine Zusammenfassung deiner Auswahl: Basis-Konfigurationen, Team-Zuweisung und die Variablen-Konfiguration. Falls du noch etwas anpassen möchtest, kannst du unten links über den Button **Zurück** jederzeit einen Schritt im Prozess zurückgehen. Ist alles korrekt, klicke unten rechts auf **Deployen**, um den Vorgang abzuschließen.
 
