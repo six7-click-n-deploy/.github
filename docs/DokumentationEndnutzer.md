@@ -477,29 +477,48 @@ Als Admin siehst du hier **alle** bisher angelegten Apps – unabhängig davon, 
 
 ---
 
-## App-Details
+## App-Details einsehen
 
-Durch Klicken auf eine App gelangst du in deren Detailansicht. 
+Wenn du in der App-Übersicht auf eine der angezeigten Kacheln klickst, öffnet sich die Detailseite der jeweiligen App. Diese Seite bietet dir einen umfassenden Einblick in die Anwendung, ihre Releases sowie administrative Verwaltungsmöglichkeiten.
 
 > **Admin-Aktionen:** In der Detailansicht findest du oben rechts jederzeit die Buttons, um die ausgewählte App zu **bearbeiten** oder vollständig zu **löschen**.
 
+---
+
 ### Tab: Übersicht
 
-In diesem Tab findest du die vom Ersteller hinterlegte App-Beschreibung sowie allgemeine Metadaten und Versionsinformationen:
+Dieser Tab ist in verschiedene Bereiche unterteilt, die dir sowohl inhaltliche als auch technische Informationen liefern:
 
-* **Allgemeine Informationen:** Erstellungsdatum und Ersteller der App.
-* **Versionsdetails:** Nach Auswahl einer Version erhältst du Einsicht in folgende Daten:
-  * **Name** & **Typ**
-  * **Commit** & **Autor**
-  * **Veröffentlichungsdatum (Published at)**
-  * **Pre-Release-Status**
-  * **Link** 
-* **Versionsbeschreibung:** Die vom App-Entwickler hinterlegte Beschreibung auf GitHub.
-* **App deployen:** Über das Dropdown-Feld auf der rechten Seite wählst du die gewünschte Version aus und startest über den entsprechenden Button direkt den Deployment-Prozess.
+#### 1. Kopfbereich (Allgemeine Übersicht)
+Direkt oben auf der Seite siehst du neben dem Namen und dem Logo der App auf einen Blick, **wie viele Versionen verfügbar** sind. Daneben findest du auch den direkten **Link zum dazugehörigen GitHub-Repository**.
+
+#### 2. App-Beschreibung (Vom Entwickler definiert)
+Der große Hauptbereich beinhaltet die Beschreibung der App. Diese Inhalte werden vom jeweiligen Entwickler beim Erstellen der App frei festgelegt. Hier findest du spezifische Informationen wie zum Beispiel:
+* Erklärungen zu Features, dem User-Management oder dem VM-Deployment
+* Schätzungen zur Deployment-Dauer
+* Erklärungen zu konfigurierbaren Variablen oder benötigten Aufgabendateien
+
+#### 3. Feste Metadaten und Versionsinfos
+Im unteren Bereich der Seite befinden sich fest definierte Blöcke mit Systeminformationen:
+* **App Informationen:** Zeigt an, wann und von wem (Ersteller) die App initial angelegt wurde.
+* **Versionsdetails:** Liefert technische Daten zur aktuell ausgewählten Version:
+  * Name & Typ
+  * Commit-Hash & Autor
+  * Veröffentlichungsdatum (*Published at*)
+  * Pre-Release-Status
+  * Link zum Release
+* **Versionsbeschreibung:** Beinhaltet die spezifischen Notizen, Release Notes oder Beschreibungen, die auf GitHub für genau diese Version hinterlegt wurden.
+
+#### 4. Versionsauswahl & Deployment
+Auf der rechten Seite befindet sich eine fixierte Box zur Versionssteuerung und zum Ausführen von Aktionen:
+* **Versionsauswahl:** Über das Dropdown-Menü *Version auswählen* kannst du durch alle verfügbaren Releases navigieren. Die Blöcke "Versionsdetails" und "Versionsbeschreibung" passen sich automatisch deiner Auswahl an.
+* **App deployen:** Anders als reguläre Nutzer (z. B. Studenten) hast du als Admin die Berechtigung, den Deployment-Prozess zu starten. Wähle dazu einfach die gewünschte Version aus und klicke auf den Button **Jetzt Deployen**.
+
+---
 
 ### Tab: App Store (Sichtbarkeit & Freigabe)
 
-Hier verwaltest du die Sichtbarkeit der App im Store sowie deren Freigabe-Einstellungen:
+In diesem Tab verwaltest du die Sichtbarkeit der App im Store sowie deren Freigabe-Einstellungen:
 
 * **Von Privat auf Öffentlich schalten:**
   Macht die App für alle Nutzer im Store sichtbar, sodass diese die App deployen können (sobald mindestens eine Version freigegeben wurde).
