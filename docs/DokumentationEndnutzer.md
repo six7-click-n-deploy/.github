@@ -124,8 +124,13 @@ Willkommen im App Store! Diese Dokumentation führt dich durch die wichtigsten F
 Der Einstieg in die Plattform erfolgt über den regulären Login. Du kannst dich entweder mit deinem **Benutzernamen und Passwort** oder deiner **E-Mail-Adresse und Passwort** anmelden.
 
 Nach erfolgreichem Login landest du direkt auf dem **Dashboard**. Hier erhältst du einen schnellen Überblick über:
-* Deine zugewiesenen Deployments und verfügbaren Apps.
+* Deine zugewiesenen Deployments und verfügbaren Apps und Kurse.
 * Deine verfügbaren und genutzten OpenStack-Ressourcen (z. B. VMs, RAM, Storage, Floating IPs).
+
+<figure style="margin-bottom: 30px;">
+  <img src="img/Lehrender_Dashboard.png" alt="Dashboard mit Ressourcenverbrauch" width="80%">
+  <figcaption style="font-size: 0.9em; color: #555;">Dashboard mit Ressourcenverbrauch</figcaption>
+</figure>
 
 **Erstanmeldung:** Wenn du dich zum ersten Mal anmeldest, fehlen dem System noch deine OpenStack-Zugangsdaten. Dies wird dir direkt oben auf dem Dashboard durch einen gelb hinterlegten Hinweis ("OpenStack-Credentials fehlen") signalisiert. Klicke dort auf den Button **Jetzt einrichten**, um deine Daten zu hinterlegen.
 
@@ -199,8 +204,6 @@ In der Kursverwaltung siehst du standardmäßig alle Kurse, die du selbst erstel
 
 > **Wichtiger Hinweis (Kurszuweisung):** Jeder Studierende kann immer nur in *einem* Kurs sein. Fügst du jemanden hinzu, der bereits in einem anderen Kurs eingetragen ist, wird die Person automatisch in den neuen Kurs verschoben und aus dem bisherigen entfernt.
 
-> **Wichtiger Hinweis (Suchfunktion):** In der Suche tauchen nur Studierende auf, die im System (Keycloak) mit der entsprechenden Rolle hinterlegt sind und sich bereits mindestens einmal eingeloggt haben.
-
 <figure style="margin-bottom: 30px;">
   <img src="img/Kurs_anlegen.png" alt="Kurs anlegen" width="80%">
   <figcaption style="font-size: 0.9em; color: #555;">Kurs anlegen: Kursnamen auswählen</figcaption>
@@ -217,58 +220,116 @@ In der Kursverwaltung siehst du standardmäßig alle Kurse, die du selbst erstel
 </figure>
 
 
-### Deployments hinzufügen
+### Deployments erstellen
 
 Über den Menüpunkt **Deployments** in der linken Seitenleiste findest du alle Deployments, die du erstellt hast.
 
-> **Wichtiger Hinweis (Deployment hinzufügen):** Um ein Deployment hinzuzufügen, muss im Vorgeld bereits eine App angelegt und freigegeben worden sein.
+> **Wichtiger Hinweis (Deployment erstellen):** Um ein Deployment zu erstellen, muss im Vorfeld bereits eine App angelegt und freigegeben worden sein.
 
 1. Klicke in der Deployment-Übersicht oben rechts auf den Button **+ Neues Deployment**. 
-2. Wähle eine deiner bereits angelegten Apps aus, indem du auf **Details & Deployment** klickst. Auf der nun geöffneten App-Detail-Seite wählst du rechts die gewünschte Version aus und klickst auf **Jetzt Deployen**. 
-3. Vergib einem Namen für das Deployment und füge anschließend einen kompletten Kurs oder einzelne Studenten hinzu. Auf der Linken Seite findest du, je nach ausgewählter Ansicht die verfügbaren Kurse oder eine Suchfunktion. Auf der rechten Seite werden die ausgewählten Studenten aufgelistet. Über das rote Kreuz neben dem jeweiligen Namen können Personen wieder entfernt werden. Klicke auf **Weiter**, um zum nächsten Schritt zu gelangen.
-4. Auf der Verteilungs-Seite kannst du nun die Gruppen bilden. Hierfür gibt es drei Möglichkeiten:
-   * **Eine Gruppe:** Alle ausgewählten Studenten werden in einer einzigen Gruppe zusammengefasst.
-   * **Jeder Nutzer einzeln:** Jeder Student bildet eine eigene Gruppe.
-   * **Individuell:** Hier kannst du auf der rechten Seite über die Plus **+** und Minus **-** Buttons eine beliebige Anzahl an Gruppen festlegen.
-
-   Du kannst die Studenten über den Button **Zufall** automatisch verteilen lassen oder sie manuell per Drag-and-Drop zuweisen. Über den Button **Zurücksetzen** lässt sich die Zuteilung wieder in den Anfangszustand versetzen. Bestätige deine Eingabe mit **Weiter**.
-5. Im Schritt Variablen können nun spezifische Packer- oder Terraform-Variablen angepasst werden (abhängig von der jeweiligen App). Standardmäßig sind alle Variablen mit Standardwerten (Defaults) vorausgefüllt, sodass ein Deployment auch ohne Änderungen problemlos durchgeführt werden kann. Für die Variablen stehen Dropdown-Felder zur Verfügung. Je nach App hast du zudem die Möglichkeit, den Gruppen oder Nutzern Dateien per Drag-and-Drop oder per Klick anzufügen. Klicke auf **Weiter** um in den nächsten Schritt zu gelangen.
-6. Den Abschluss des Deployment-Prozesses bildet die Übersichts-Seite. Hier findest du eine Zusammenfassung deiner Auswahl: Basis-Konfigurationen, Team-Zuweisung und die Variablen-Konfiguration. Falls du noch etwas anpassen möchtest, kannst du unten links über den Button **Zurück** jederzeit einen Schritt im Prozess zurückgehen. Ist alles korrekt, klicke unten rechts auf **Deployen**, um den Vorgang abzuschließen.
-
-> **Wichtiger Hinweis (Studentenauswahl):** In der Auswahl tauchen nur Studierende auf, die im System (Keycloak) mit der entsprechenden Rolle hinterlegt sind und sich bereits mindestens einmal eingeloggt haben.
 
 <figure style="margin-bottom: 30px;">
-  <img src="img/DP_Auswahl.png" alt="Studenten auswählen" width="80%">
+  <img src="img/Deployment_erstellen.png" alt="Deployment erstellen" width="80%">
+  <figcaption style="font-size: 0.9em; color: #555;">Deployment erstellen</figcaption>
+</figure>
+
+2. Wähle eine deiner bereits angelegten Apps aus, indem du auf **Details & Deployment** klickst. Auf der nun geöffneten App-Detail-Seite wählst du rechts die gewünschte Version aus und klickst auf **Jetzt Deployen**. 
+
+<figure style="margin-bottom: 30px;">
+  <img src="img/App_Auswahl.png" alt="App auswählen" width="80%">
+  <figcaption style="font-size: 0.9em; color: #555;">Deploymentprozess: App auswählen</figcaption>
+</figure>
+
+
+3. Vergib einem Namen für das Deployment und füge anschließend einen kompletten Kurs oder einzelne Studenten hinzu. Auf der Linken Seite findest du, je nach ausgewählter Ansicht die verfügbaren Kurse oder eine Suchfunktion. Auf der rechten Seite werden die ausgewählten Studenten aufgelistet. Über das rote Kreuz neben dem jeweiligen Namen können Personen wieder entfernt werden. Klicke auf **Weiter**, um zum nächsten Schritt zu gelangen.
+
+<figure style="margin-bottom: 30px;">
+  <img src="img/Studenten_Auswählen.png" alt="Studenten auswählen" width="80%">
   <figcaption style="font-size: 0.9em; color: #555;">Studenten auswählen: Kurse oder Studenten hinzufügen</figcaption>
 </figure>
 
+4. Auf der Verteilungs-Seite kannst du nun die Teams bilden. Hierfür gibt es drei Möglichkeiten:
+   * **Eine Gruppe:** Alle ausgewählten Studenten werden in einem einzigen Team zusammengefasst.
+   * **Jeder Nutzer einzeln:** Jeder Student bildet eine eigenes Team.
+   * **Individuell:** Hier kannst du auf der rechten Seite über die Plus **+** und Minus **-** Buttons eine beliebige Anzahl an Teams festlegen.
+
+   Du kannst die Studenten über den Button **Zufall** automatisch verteilen lassen oder sie manuell per Drag-and-Drop zuweisen. Über den Button **Zurücksetzen** lässt sich die Zuteilung wieder in den Anfangszustand versetzen. Außerdem kann jedem Team auch ein individueller Name gegeben werden. Bestätige deine Eingabe mit **Weiter**.
+
 <figure style="margin-bottom: 30px;">
-  <img src="img/DP_Verteilung.png" alt="Studenten verteilen" width="80%">
+  <img src="img/Studenten_Verteilen.png" alt="Studenten verteilen" width="80%">
   <figcaption style="font-size: 0.9em; color: #555;">Studenten verteilen: Anzahl der Gruppen und Gruppenverteilung auswählen</figcaption>
 </figure>
 
+
+5. Im Schritt Variablen können nun spezifische Packer- oder Terraform-Variablen angepasst werden (abhängig von der jeweiligen App). Die Eingabefelder hängen dabei von der jeweiligen Variablen-Konfiguration ab.
+   * **Standardwerte (Defaults):** Die Variablen sind bereits mit Standardwerten des App-Erstellers vorausgefüllt. 
+   * **Value help:** Erfordert eine Variable eine spezifische Open-Stack Ressource (z.B. ein Netzwerk oder Flavor), nutzt das System die hinterlegten Credentials (z.B aus der clouds.yaml). Über diese Zugangsdaten werden die in OpenStack verfügbaren Ressourcen live abgerufen und als Dropdown-Menü bereitgestellt.
+   * **Geltungsbereich (Scope) der Variablen:** Je nach App-Konfiguration werden Variablen in drei verschiedenen Scopes abgefragt.
+     * **Alle:** Die Variable wird einmalig definiert und gilt für das gesamte Deployment.
+     * **Team:** Die Variable muss für jede Gruppe separat definiert werden.
+     * **User:** Die Variable muss für jeden User separat definiert werden.
+   * **Info-Button:** Über das Info-Symbol (i) neben dem Variablennamen lässt sich ein Tooltip aufrufen. Dieser enthält die genaue Beschreibung der Variable und Formatierungshinweise.
+   * **Datei-Uploads:** Je nach App können Dateien hochgeladen werden. Diese können per Drag-and-Drop oder per Klick eingefügt werden. Auch hier kann der Upload für alle, pro Team oder pro User erfolgen. Hierbei sollte auf die Dateiendung geachtet werden.
+
+> **Wichtiger Hinweis (Standardwerte (Defaults)):**  Diese Defaults funktionieren nur dann fehlerfrei, wenn es Überschneidungen zwischen der Cloud-Umgebung des App-Erstellers und deinem eigenen OpenStack-Account gibt (z. B. wenn in beiden Systemen identische Bezeichnungen für Netzwerke oder Flavors existieren). Gibt es diese Überschneidungen nicht, müssen die Standardwerte zwingend an deine eigene Cloud-Umgebung angepasst werden.
+
+> **Wichtiger Hinweis (Upload Limit):** Eine einzelne Datei darf **maximal 2MB** groß sein und das Gesamtvolumen **maximal 10MB**.
+
+> **Wichtiger Hinweis (Web Anwendungen (z.B. pgadmin, Web-Latex)):** Wenn eine Applikation eine Web-Oberfläche bereitstellt, muss bei der Auswahl der Security Group (z.B. bei der Variable shared_secgroup_id) darauf geachtet werden, dass sie für HTTP-Zugriffe ausgelegt ist. Sie benötigt eine Eintritts-Regel für TCP auf Port 80 (HTTP) von 0.0.0.0/0. Fehlt diese Regel, sind die Web-Oberflächen nach dem Deployment nicht erreichbar.
+
 <figure style="margin-bottom: 30px;">
-  <img src="img/DP_Variablen.png" alt="Variablen konfigurieren" width="80%">
+  <img src="img/Variablen_Konfiguration.png" alt="Variablen konfigurieren" width="80%">
   <figcaption style="font-size: 0.9em; color: #555;">Variablen konfigurieren: Standardwerte nutzen oder konfigurieren und Dateien einfügen (abhängig von der jeweiligen App)</figcaption>
 </figure>
 
 <figure style="margin-bottom: 30px;">
-  <img src="img/DP_Übersicht.png" alt="Übersicht" width="80%">
+  <img src="img/Dropdown_Dateiupload.png" alt="Dropdown und Dateiupload" width="80%">
+  <figcaption style="font-size: 0.9em; color: #555;">Dropdown und Dateiupload</figcaption>
+</figure>
+
+6. Den Abschluss des Deployment-Prozesses bildet die Übersichts-Seite. Hier findest du eine Zusammenfassung deiner Auswahl: Basis-Konfigurationen, Team-Zuweisung und die Variablen-Konfiguration. Falls du noch etwas anpassen möchtest, kannst du unten links über den Button **Zurück** jederzeit einen Schritt im Prozess zurückgehen. Ist alles korrekt, klicke unten rechts auf **Deployen**, um den Vorgang abzuschließen.
+
+
+<figure style="margin-bottom: 30px;">
+  <img src="img/Summary.png" alt="Übersicht" width="80%">
   <figcaption style="font-size: 0.9em; color: #555;">Übersicht: Zusammenfassung der Basis-Konfigurationen, Team-Zuteilung und Varianlen-Konfiguration</figcaption>
 </figure>
 
 
 ### Deployments und Zugangsdaten einsehen
 
-Du kannst über den Menüpunkt **Deployments** in der linken Seitenleiste alle Deployments einsehen, denen du (bzw. dein Team) zugewiesen wurdest und die du deployt hast.
+Du kannst über den Menüpunkt **Deployments** in der linken Seitenleiste alle Deployments einsehen, die du deployt hast.
 
 * **Übersicht:** Hier siehst du eine Liste der aktiven Deployments inklusive Status (z. B. "Erfolgreich").
-* **Details & Zugangsdaten:** Klicke auf ein Deployment, um die Details zu öffnen. Du siehst Informationen zur genutzten App, dem Besitzer (Lehrkraft/Admin) und der Team-Zuteilung.
-* **Zugang erneut senden:** In der Sektion "Teams & Mitglieder" findest du neben dem Namen der Studenten den Button **Zugang erneut senden**. Sollten Studenten ihre Logindaten für diese spezifische App (z. B. Benutzername und Passwort für eine Datenbank-Instanz) vergessen oder nicht erhalten haben, kannst du sie dir hierüber erneut zuschicken lassen.
+* **Detailseite:**
+   * **Übersicht:** Die Detailseite zeigt weitere Informationen zu dem Deployment.
+   * **Pausieren:** Oben rechts über den Button kannst du das gesamte Deployment pausieren und anschließend wieder fortsetzen. 
+   * **Löschen:** Du kannst das Deployment über den Löschen Button löschen. Es werden hierbei alle zugehörigen Open-Stack Ressourcen entfernt.
+   * **Deployment Info:** Zeigt allgemeine Daten wie den vergebenen Namen, den Release-Tag und das Erstellungsdatum.
+   * **App:** Zeigt den App Namen, die Beschreibung und das zugehörige Git Repository.
+   * **Besitzer:** Zeigt den Nutzernamen der Person, welche diese App deployt hat, sowie deren Email Adresse und Rolle.
+   * **Teams & Mitglieder:** In diesem Bereich sind alle Teams und deren zugewiesene Studenten aufgelistet. Als Lehrender kannst du hier den Studenten die Zugangsdaten erneut zusenden lassen, indem du auf **Zugang erneut senden** klickst.
+   * **Infrastruktur:** Hier kannst du die für dieses Deployment genutzten Virtuellen Maschinen und Netzwerke sehen. Über den Button **Details** bei den virtuellen Maschinen kannst du weitere Informationen zu dieser finden. Möchtest du eine einzelne virtuelle Maschine redeployen, kannst du das hier über den Button **Redeploy**. Beim Redeploy wird nur diese spezifische Instanz zerstört und neu aufgebaut.
+   * **Tasks & Logs:** Hier findest du einen Überblick über die Tasks, mit dem Status und Type, sowie Start und Enddatum. Während des Deployments kannst du hier mit Echtzeit-Logs nach verfolgen an welcher Stelle des Prozesses es sich gerade befindet. Die Logs umfassen Zeitstempel, Kategorien und die direkten Ausgaben von Terraform und Packer. Diese Logs können über das Kopieren Symbol in die Zwischenablage kopiert werden. In den Infrastruktur-Details befindet sich der rohe Terraform-State im JSON-Format. Hier findest du z.B. technische Details und Output-Werte. Auch diese Daten kannst du per Klick in die Zwischenablage kopieren.
 
 <figure style="margin-bottom: 30px;">
-  <img src="img/Deployments_Details_einsehen.png" alt="Deployment Details" width="80%">
-  <figcaption style="font-size: 0.9em; color: #555;">Deployments: Details einsehen und Logindaten erneut anfordern</figcaption>
+  <img src="img/Depl_detail.png" alt="Deployment Übersicht" width="80%">
+  <figcaption style="font-size: 0.9em; color: #555;">Deployments Übersicht</figcaption>
+</figure>
+
+<figure style="margin-bottom: 30px;">
+  <img src="img/Depl_detail2.png" alt="Deployment Übersicht Infrastruktur" width="80%">
+  <figcaption style="font-size: 0.9em; color: #555;">Deployments Übersicht Infrastruktur</figcaption>
+</figure>
+
+<figure style="margin-bottom: 30px;">
+  <img src="img/Depl_logs.png" alt="Deployment Übersicht Tasks & Logs" width="80%">
+  <figcaption style="font-size: 0.9em; color: #555;">Deployments Übersicht Tasks & Logs</figcaption>
+</figure>
+
+<figure style="margin-bottom: 30px;">
+  <img src="img/Depl_logs2.png" alt="Deployment Übersicht Terraform Logs" width="80%">
+  <figcaption style="font-size: 0.9em; color: #555;">Deployments Übersicht Terraform Logs</figcaption>
 </figure>
 
 ---
