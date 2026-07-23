@@ -292,18 +292,137 @@ Diese Seite dient als zentrale Anlaufstelle für Fragen und Probleme:
 
 ## 3. Admin
 
+Willkommen im App Store! Diese Dokumentation führt dich durch die wichtigsten Funktionen, die dir als Admin in der Plattform zur Verfügung stehen.
+
+### Login und Dashboard
+
+Der Einstieg in die Plattform erfolgt über den regulären Login. Du kannst dich entweder mit deinem **Benutzernamen und Passwort** oder deiner **E-Mail-Adresse und Passwort** anmelden.
+
+Nach erfolgreichem Login landest du direkt auf dem **Dashboard**. Hier erhältst du einen schnellen Überblick über:
+* Deine zugewiesenen Deployments und verfügbaren Apps.
+* Deine verfügbaren und genutzten OpenStack-Ressourcen (z. B. VMs, RAM, Storage, Floating IPs).
+
+**Erstanmeldung:** Wenn du dich zum ersten Mal anmeldest, fehlen dem System noch deine OpenStack-Zugangsdaten. Dies wird dir direkt oben auf dem Dashboard durch einen gelb hinterlegten Hinweis ("OpenStack-Credentials fehlen") signalisiert. Klicke dort auf den Button **Jetzt einrichten**, um deine Daten zu hinterlegen.
+
+<figure style="margin-bottom: 30px;">
+  <img src="img/Hinweis_auf_fehlende_OS-Creds_admin.png" alt="Dashboard mit fehlenden Credentials" width="80%">
+  <figcaption style="font-size: 0.9em; color: #555;">Dashboard: Hinweis auf fehlende OpenStack-Credentials</figcaption>
+</figure>
+
+### OpenStack-Credentials hinterlegen
+
+Um die Ressourcen der Plattform nutzen zu können, müssen deine Credentials gültig sein. Auf der Einrichtungsseite hast du zwei Möglichkeiten:
+1. **Manuelle Eingabe:** Trage die Daten (Auth-URL, Region, Username etc.) händisch in die entsprechenden Felder ein.
+2. **Datei-Upload (Empfohlen):** Ziehe einfach deine `clouds.yaml`-Datei per Drag & Drop in das gestrichelte Feld oder klicke auf "Datei auswählen". Die Felder werden daraufhin automatisch ausgefüllt. Du musst lediglich noch dein persönliches Passwort eingeben.
+
+Sobald die Daten gespeichert sind, prüft das System diese. Oben links erscheint ein grüner Status **"Credentials gültig"**. Du kannst die Verbindung jederzeit über den Button **Erneut testen** aktualisieren oder die Daten über **Löschen** komplett entfernen.
+
+> **Ausnahmefall:** Solltest du aus der Vergangenheit bereits zugewiesene Deployments besitzen, aber keine gültigen Credentials mehr hinterlegt haben, musst du zunächst alle aktuellen Deployments löschen, bevor du neue Credentials hinzufügen kannst. 
+
+<figure style="margin-bottom: 30px;">
+  <img src="img/Credentials_hochladen_admin.png" alt="OpenStack Credentials einrichten" width="80%">
+  <figcaption style="font-size: 0.9em; color: #555;">Profil-Einstellungen: Credentials hochladen oder manuell eintragen</figcaption>
+</figure>
+
+### Profil und Einstellungen
+
+Klickst du oben rechts auf dein **Nutzer-Icon**, öffnet sich ein kleines Menü. Hier kannst du dich **abmelden** oder dein **Profil** aufrufen.
+
+In der Profilansicht siehst du alle relevanten Account-Daten auf einen Blick:
+* Vorname, Nachname und E-Mail-Adresse
+* Deinen zugewiesenen Kurs
+* Deine Rolle (Admin)
+* Registrierungsdatum sowie System-IDs (Benutzer-ID und Keycloak-ID)
+
+Zusätzlich findest du hier unter dem Punkt "Einstellungen" jederzeit den Link zu deinen **OpenStack-Credentials**, falls du diese nachträglich anpassen musst. Über den "Zurück"-Button oben links gelangst du wieder auf das Dashboard.
+
+<figure style="margin-bottom: 30px;">
+  <img src="img/Overview_Nutzerdaten_admin.png" alt="Profilansicht" width="80%">
+  <figcaption style="font-size: 0.9em; color: #555;">Profil: Übersicht der eigenen Benutzerdaten</figcaption>
+</figure>
+
+### Apps anlegen und zur Überprüfung einreichen
+
+Über den Menüpunkt **Apps** in der linken Seitenleiste (oder den Fastlink auf dem Dashboard) gelangst du zur App-Übersicht. Als Admin kannst du neue Apps anlegen und den Prüfprozess anstoßen. 
+
+> **Hinweis für Admins:** Auch von Admins angelegte Apps durchlaufen den regulären Review-Prozess. Das sorgt für maximale Sicherheit und ermöglicht bei Bedarf ein 4-Augen-Prinzip im Admin-Team. Du kannst deine eingereichte App im Anschluss selbst direkt freigeben.
+
+1. Klicke in der App-Übersicht oben rechts auf den Button **+ App hinzufügen**.
+2. Vergib einen **Namen** und trage eine **Beschreibung** ein (Markdown wird unterstützt, eine Live-Vorschau hilft dir bei der Formatierung).
+3. (Optional) Lade ein App-Logo hoch.
+4. Füge den **Link zu deinem GitHub-Repository** (als HTTPS-Link) ein.
+5. **Sichtbarkeit:** Entscheide, ob die App **Privat** oder **Öffentlich** sein soll:
+   - **Privat:** Nach der Freigabe ist die App nur für dich im Store sichtbar.
+   - **Öffentlich:** Nach der Freigabe ist die App für alle Nutzer im Store sichtbar.
+6. Falls dein GitHub-Repository privat ist, musst du vor dem Speichern den technischen User `six7-click-n-deploy` als Collaborator zum Repository hinzufügen.
+7. Hake die Option **"Alle Versionen einreichen"** an, damit deine Git-Tags als Versionen für das Review übermittelt werden.
+
+Klicke abschließend auf **Hinzufügen**. Die App wird angelegt und befindet sich nun im Status „Wartet auf Freigabe“. Als Admin kannst du die App im nächsten Schritt direkt selbst (oder durch einen anderen Admin) prüfen und genehmigen.
+
+<figure style="margin-bottom: 30px;">
+  <img src="img/App_hinzufügen.png" alt="App hinzufügen" width="80%">
+  <figcaption style="font-size: 0.9em; color: #555;">App hinzufügen: Anlegen und Einreichen einer neuen App</figcaption>
+</figure>
+
+## Apps-Übersicht
+
+Über den Menüpunkt **Apps** in der linken Seitenleiste (oder den Fastlink auf dem Dashboard) gelangst du zur zentralen App-Übersicht. 
+
+Als Admin siehst du hier **alle** bisher angelegten Apps – unabhängig davon, ob sie öffentlich oder privat sind und welcher Nutzer sie erstellt hat.
+
+* **Filterfunktion:** Über die Tab-Felder oben rechts kannst du die Anzeige nach *Alle*, *Öffentlich* oder *Privat* filtern.
+* **Kennzeichnung privater Apps:** 
+  * Deine eigenen privaten Apps sind mit einem violetten Label (Privat) gekennzeichnet.
+  * **Private Apps anderer Nutzer** besitzen dieses Label nicht, werden dir als Admin in der Liste aber dennoch angezeigt.
+
+---
+
+## App-Details
+
+Durch Klicken auf eine App gelangst du in deren Detailansicht. 
+
+> **Admin-Aktionen:** In der Detailansicht findest du oben rechts jederzeit die Buttons, um die ausgewählte App zu **bearbeiten** oder vollständig zu **löschen**.
+
+### Tab: Übersicht
+
+In diesem Tab findest du die vom Ersteller hinterlegte App-Beschreibung sowie allgemeine Metadaten und Versionsinformationen:
+
+* **Allgemeine Informationen:** Erstellungsdatum und Ersteller der App.
+* **Versionsdetails:** Nach Auswahl einer Version erhältst du Einsicht in folgende Daten:
+  * **Name** & **Typ**
+  * **Commit** & **Autor**
+  * **Veröffentlichungsdatum (Published at)**
+  * **Pre-Release-Status**
+  * **Link** 
+* **Versionsbeschreibung:** Die vom App-Entwickler hinterlegte Beschreibung auf GitHub.
+* **App deployen:** Über das Dropdown-Feld auf der rechten Seite wählst du die gewünschte Version aus und startest über den entsprechenden Button direkt den Deployment-Prozess.
+
+### Tab: App Store (Sichtbarkeit & Freigabe)
+
+Hier verwaltest du die Sichtbarkeit der App im Store sowie deren Freigabe-Einstellungen:
+
+* **Von Privat auf Öffentlich schalten:**
+  Macht die App für alle Nutzer im Store sichtbar, sodass diese die App deployen können (sobald mindestens eine Version freigegeben wurde).
+  
+  > **Hinweis:** Bei privaten Apps *anderer Nutzer* kann nur der jeweilige Ersteller eine Version zur Freigabe einreichen.
+
+* **Von Öffentlich auf Privat schalten:**
+  Entzieht der Allgemeinheit den Zugriff auf die App.
+  * **Eigene App:** Ist nach der Umstellung nur noch für dich sichtbar.
+  * **App eines anderen Nutzers:** Ist nach der Umstellung nur noch für dich (als Admin) und den ursprünglichen Ersteller sichtbar.
+
 ## App-Freigaben verwalten
 
-Als Admin verfügen Sie über erweiterte Rechte, um neue App-Versionen zu prüfen, freizugeben oder zu sperren. 
+Als Admin verfügst du über erweiterte Rechte, um neue App-Versionen zu prüfen, freizugeben oder zu sperren. 
 
 ### Die Freigabe-Verwaltung im Überblick
 
-Wenn Sie die Freigabe-Verwaltung öffnen, sehen Sie standardmäßig nur Apps, für die aktuell eine Freigabe beantragt wurde. 
+Über den Menüpunkt **Apps** in der linken Seitenleiste gelangst du zur Freigabe-Verwaltung. Hier siehst du standardmäßig nur Apps, für die aktuell eine Freigabe beantragt wurde. 
 
-* **Neue Versionen prüfen:** Liegen ausstehende Einreichungen vor, werden diese hier aufgelistet. Sie können jede Version entweder **genehmigen** oder **ablehnen**.
-* **Filter ausschalten (Alle Apps anzeigen):** Wenn Sie oben rechts den Filter deaktivieren, sehen Sie alle öffentlichen und privaten Apps. 
+* **Neue Versionen prüfen:** Liegen ausstehende Einreichungen vor, werden diese hier aufgelistet. Du kannst jede Version entweder **genehmigen** oder **ablehnen**.
+* **Filter ausschalten (Alle Apps anzeigen):** Wenn du oben rechts den Filter deaktivierst, siehst du alle öffentlichen und privaten Apps. 
 * **Hinweis zu privaten Apps:** Hier werden keine ausstehenden Freigaben angezeigt. Erst wenn eine App veröffentlicht wird, können Versionen zur Freigabe eingereicht werden.
-* **Detailansicht:** Klicken Sie auf eine App in der Liste, um alle eingereichten Versionen und deren aktuellen Status einzusehen.
+* **Detailansicht:** Klicke auf eine App in der Liste, um alle eingereichten Versionen und deren aktuellen Status einzusehen.
 
 <figure style="margin-bottom: 30px;">
   <img src="img/Genehmigen_Ablehnen.png" alt="Freigabe-Verwaltungsseite" width="80%">
@@ -320,13 +439,13 @@ Wenn Sie die Freigabe-Verwaltung öffnen, sehen Sie standardmäßig nur Apps, f�
 
 ### App-Versionen freigeben oder ablehnen
 
-Sie haben drei Möglichkeiten, wie Sie mit eingereichten oder bereits freigegebenen Versionen verfahren können:
+Du hast drei Möglichkeiten, wie du mit eingereichten oder bereits freigegebenen Versionen verfahren kannst:
 
 | Aktion | Ablauf & Voraussetzungen | Auswirkung |
 | :--- | :--- | :--- |
-| **Genehmigen** | Klicken Sie bei der ausstehenden Version auf **Genehmigen**. | Die Version wird sofort für alle Nutzer freigeschaltet. |
-| **Ablehnen** | Klicken Sie auf "Ablehnen". <br>**Pflicht:** Sie müssen im Freitextfeld einen Ablehnungsgrund angeben. | Die Version wird nicht freigeschaltet. Der zugehörige Nutzer sieht Ihre Begründung. |
-| **Widerrufen** | Sie können eine bereits genehmigte Version durch Klick auf "Widerrufen" jederzeit nachträglich sperren.<br>**Pflicht:** Sie müssen einen Widerrufsgrund (z. B. eine Sicherheitslücke) angeben. | Die Version wird für alle Nutzer sofort gesperrt. |
+| **Genehmigen** | Klicke bei der ausstehenden Version auf **Genehmigen**. | Die Version wird sofort für alle Nutzer freigeschaltet. |
+| **Ablehnen** | Klicke auf "Ablehnen". <br>**Pflicht:** Du musst im Freitextfeld einen Ablehnungsgrund angeben. | Die Version wird nicht freigeschaltet. Der zugehörige Nutzer sieht deine Begründung. |
+| **Widerrufen** | Du kannst eine bereits genehmigte Version durch Klick auf "Widerrufen" jederzeit nachträglich sperren.<br>**Pflicht:** Du musst einen Widerrufsgrund (z. B. eine Sicherheitslücke) angeben. | Die Version wird für alle Nutzer sofort gesperrt. |
 
 <figure style="margin-bottom: 30px;">
   <img src="img/Freigabe_widerrufen.png" alt="Freigabe-Verwaltungsseite: Freigabe widerrufen" width="80%">
@@ -334,6 +453,19 @@ Sie haben drei Möglichkeiten, wie Sie mit eingereichten oder bereits freigegebe
 </figure>
 
 
-> **Gut zu wissen:** Sowohl abgelehnte als auch widerrufene Versionen sind nicht endgültig verloren. Sie können diese zu einem späteren Zeitpunkt jederzeit manuell **erneut genehmigen**, sobald die Probleme behoben wurden.
+> **Gut zu wissen:** Sowohl abgelehnte als auch widerrufene Versionen sind nicht endgültig verloren. Du kannst diese zu einem späteren Zeitpunkt jederzeit manuell **erneut genehmigen**, sobald die Probleme behoben wurden.
 
+### Hilfe und Support
+
+Solltest du einmal nicht weiterkommen, findest du ganz unten in der linken Seitenleiste den Punkt **Hilfe**.
+
+Diese Seite dient als zentrale Anlaufstelle für Fragen und Probleme:
+* **Wenn etwas nicht funktioniert:** Checklisten zur Fehlerbehebung (z. B. Überprüfung der Quota-Limits).
+* **Schritt-für-Schritt-Anleitungen:** Erklärungen zu grundlegenden Prozessen der Plattform.
+* **Nützliche Links:** Hier findest du Verlinkungen zum Projekt-Repository auf GitHub, zur technischen Dokumentation für Installation/Administration sowie Details zur Technologie-Architektur.
+
+<figure style="margin-bottom: 30px;">
+  <img src="img/Hilfeseite.png" alt="Hilfe Seite" width="80%">
+  <figcaption style="font-size: 0.9em; color: #555;">Hilfe & Q/A: Support, Anleitungen und weiterführende Links</figcaption>
+</figure>
 ---
