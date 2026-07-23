@@ -172,7 +172,11 @@ Auf der rechten Seite deines Bildschirms befindet sich eine fixierte Box zur Ver
 > **Wichtiger Hinweis zum "Jetzt Deployen"-Button:** Unter der Versionsauswahl befindet sich ein Button, um ein Deployment zu starten. Da du als Student keine Berechtigung für eigene Deployments hast, ist dieser Button für dich **gesperrt bzw. ohne Funktion**. Diese Ansicht dient für dich rein der Information; nur Lehrkräfte und Admins können den Deployment-Prozess tatsächlich auslösen.
 
 <figure style="margin-bottom: 30px;">
-  <img src="img/Bildschirmfoto 2026-07-23 um 17.47.50.jpg" alt="Detailseite einer App" width="80%">
+  <img src="img/App_Details_1.png" alt="Detailseite einer App" width="80%">
+  <figcaption style="font-size: 0.9em; color: #555;">App-Details: Übersicht, Entwickler-Beschreibung und Versionsauswahl</figcaption>
+</figure>
+<figure style="margin-bottom: 30px;">
+  <img src="img/App_Details_2.png" alt="Detailseite einer App" width="80%">
   <figcaption style="font-size: 0.9em; color: #555;">App-Details: Übersicht, Entwickler-Beschreibung und Versionsauswahl</figcaption>
 </figure>
 
