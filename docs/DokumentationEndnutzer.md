@@ -1,13 +1,58 @@
 # Endnutzer Dokumentation
 
 ### Autoren
-1. **Tom Weber** *(Dokumentationsteil: Student)*
+1. **Tom Weber** *(Dokumentationsteil: Allgemein, Student)*
 2. **Paulina Clauss** *(Dokumentationsteil: Lehrender)*
-3. **Monika Piano** *(Dokumentationsteil: Admin)*
+3. **Monika Pjano** *(Dokumentationsteil: Admin)*
 
 ### Reviewer (Prüfer)
-1. **[Name Reviewer 1]**
-2. **[Name Reviewer 2]** 
+1. **Luca Baeck**
+2. **Okan Soenmez**
+3. **Leon Priemer**
+4. **Iven Stahl**
+5. **Max Meinel**
+
+---
+
+## 0. Allgemein
+
+**Voraussetzungen für den Systemzugang**
+Um sich an der Plattform anmelden zu können, ist ein gültiges Benutzerkonto im zentralen Identitätsmanagementsystem (Keycloak) zwingend erforderlich. Dies gilt ausnahmslos für alle Benutzergruppen.
+
+Damit der Login erfolgreich durchgeführt werden kann, müssen in Keycloak folgende Attribute zwingend hinterlegt sein:
+* Vorname
+* Nachname
+* E-Mail-Adresse
+* Zugewiesene Rolle (Student, Lehrer oder Admin)
+
+Fehlt eine dieser Informationen, wird die Anmeldung vom System blockiert.
+
+**Hinweis zur Struktur dieser Dokumentation**
+Diese Endnutzer-Dokumentation ist strikt nach Rollen getrennt aufgebaut. Jede Sektion (Student, Lehrer, Admin) ist als eigenständige und vollumfängliche Anleitung konzipiert.
+
+Aufgrund dieses Aufbaus kann es zu inhaltlichen Dopplungen zwischen den einzelnen Kapiteln kommen. Dies ist bewusst so gewählt: Jede Nutzergruppe erhält genau die Informationen, die für sie relevant sind, ohne bei funktionsübergreifenden Themen zwischen verschiedenen Teilen des Dokuments hin- und herspringen zu müssen.
+
+---
+
+### Rechte- und Rollenübersicht
+
+Die folgende Tabelle gibt einen schnellen Überblick über die Berechtigungen der verschiedenen Benutzerklassen innerhalb des App Stores.
+
+| Funktion / Aktion | Student | Lehrer | Admin |
+| :--- | :---: | :---: | :---: |
+| Login am System (via Keycloak) | ✅ | ✅ | ✅ |
+| Eigene OpenStack-Credentials hinterlegen & verwalten | ✅ | ✅ | ✅ |
+| Öffentliche Apps einsehen | ✅ | ✅ | ✅ |
+| Private Apps einsehen | ✅ (Nur eigene) | ✅ (Nur eigene) | ✅ (Alle) |
+| Neue Apps hinzufügen (zur Prüfung einreichen) | ✅ | ✅ | ✅ |
+| Sichtbarkeit einer App auf "Privat" stellen | ✅ | ✅ | ✅ |
+| App-Versionen freigeben, ablehnen oder widerrufen | ❌ | ❌ | ✅ |
+| Neue Deployments konfigurieren und starten | ❌ | ✅ | ✅ |
+| Eigene Deployments einsehen | ❌ | ✅ | ✅ |
+| Alle Deployments (von sämtlichen Nutzern) einsehen | ❌ | ❌ | ✅ |
+| Eigene Logindaten in zugewiesenen Deployments einsehen | ✅ | ✅ | ✅ |
+| Logindaten aller Mitglieder eines Deployments einsehen | ❌ | ✅ (als Besitzer) | ✅ |
+| Kurse erstellen und Mitglieder verwalten | ❌ | ✅ | ✅ |
 
 ---
 
@@ -15,13 +60,25 @@
 
 Willkommen im App Store! Diese Dokumentation führt dich durch die wichtigsten Funktionen, die dir als Student in der Plattform zur Verfügung stehen.
 
+---
+
 ### Login und Dashboard
 
 Der Einstieg in die Plattform erfolgt über den regulären Login. Du kannst dich entweder mit deinem **Benutzernamen und Passwort** oder deiner **E-Mail-Adresse und Passwort** anmelden.
 
+<figure style="margin-bottom: 30px;">
+  <img src="img/Login.png" alt="Login" width="80%">
+  <figcaption style="font-size: 0.9em; color: #555;">Keycloak Login</figcaption>
+</figure>
+
 Nach erfolgreichem Login landest du direkt auf dem **Dashboard**. Hier erhältst du einen schnellen Überblick über:
 * Deine zugewiesenen Deployments und verfügbaren Apps.
 * Deine verfügbaren und genutzten OpenStack-Ressourcen (z. B. VMs, RAM, Storage, Floating IPs).
+
+<figure style="margin-bottom: 30px;">
+  <img src="img/Dashboard_mit_Credentials.png" alt="Dashboard mit Credentials" width="80%">
+  <figcaption style="font-size: 0.9em; color: #555;">Dashboard: Mit OpenStack-Credentials</figcaption>
+</figure>
 
 **Erstanmeldung:** Wenn du dich zum ersten Mal anmeldest, fehlen dem System noch deine OpenStack-Zugangsdaten. Dies wird dir direkt oben auf dem Dashboard durch einen gelb hinterlegten Hinweis ("OpenStack-Credentials fehlen") signalisiert. Klicke dort auf den Button **Jetzt einrichten**, um deine Daten zu hinterlegen.
 
@@ -29,6 +86,8 @@ Nach erfolgreichem Login landest du direkt auf dem **Dashboard**. Hier erhältst
   <img src="img/Hinweis_auf_fehlende_OpenStack-Credentials.png" alt="Dashboard mit fehlenden Credentials" width="80%">
   <figcaption style="font-size: 0.9em; color: #555;">Dashboard: Hinweis auf fehlende OpenStack-Credentials</figcaption>
 </figure>
+
+---
 
 ### OpenStack-Credentials hinterlegen
 
@@ -38,12 +97,14 @@ Um die Ressourcen der Plattform nutzen zu können, müssen deine Credentials gü
 
 Sobald die Daten gespeichert sind, prüft das System diese. Oben links erscheint ein grüner Status **"Credentials gültig"**. Du kannst die Verbindung jederzeit über den Button **Erneut testen** aktualisieren oder die Daten über **Löschen** komplett entfernen.
 
-> **Ausnahmefall:** Solltest du aus der Vergangenheit bereits zugewiesene Deployments besitzen, aber keine gültigen Credentials mehr hinterlegt haben, musst du zunächst alle aktuellen Deployments löschen, bevor du neue Credentials hinzufügen kannst. In diesem (seltenen) Fall erscheint ein blauer Hinweiskasten mit weiteren Instruktionen.
+> **Ausnahmefall:** Solltest du aus der Vergangenheit bereits Deployments besitzen, aber keine gültigen Credentials mehr hinterlegt haben, musst du zunächst alle aktuellen Deployments löschen, bevor du neue Credentials hinzufügen kannst.
 
 <figure style="margin-bottom: 30px;">
   <img src="img/Credentials_hochladen.png" alt="OpenStack Credentials einrichten" width="80%">
   <figcaption style="font-size: 0.9em; color: #555;">Profil-Einstellungen: Credentials hochladen oder manuell eintragen</figcaption>
 </figure>
+
+---
 
 ### Profil und Einstellungen
 
@@ -58,35 +119,70 @@ In der Profilansicht siehst du alle relevanten Account-Daten auf einen Blick:
 Zusätzlich findest du hier unter dem Punkt "Einstellungen" jederzeit den Link zu deinen **OpenStack-Credentials**, falls du diese nachträglich anpassen musst. Über den "Zurück"-Button oben links gelangst du wieder auf das Dashboard.
 
 <figure style="margin-bottom: 30px;">
-  <img src="img/Übersicht_der_eigenen_Benutzerdaten.pngbersicht_der_eigenen_Benutzerdaten.png" alt="Profilansicht" width="80%">
+  <img src="img/Uebersicht_der_eigenen_Benutzerdaten.png" alt="Profilansicht" width="80%">
   <figcaption style="font-size: 0.9em; color: #555;">Profil: Übersicht der eigenen Benutzerdaten</figcaption>
 </figure>
 
+---
+
 ### Apps anlegen und einreichen
 
-Über den Menüpunkt **Apps** in der linken Seitenleiste (oder den Fastlink auf dem Dashboard) gelangst du zur App-Übersicht. Als Student hast du die Möglichkeit, neue Apps zur Überprüfung vorzuschlagen.
+Über den Menüpunkt **Apps** in der linken Seitenleiste (oder den Fastlink auf dem Dashboard) gelangst du zur App-Übersicht. Als Student hast du die Möglichkeit, neue Apps hinzuzufügen und zur Überprüfung vorzuschlagen.
 
 1. Klicke in der App-Übersicht oben rechts auf den Button **+ App hinzufügen**.
 2. Vergib einen **Namen** und trage eine **Beschreibung** ein (Markdown wird hierbei unterstützt, eine Live-Vorschau hilft dir bei der Formatierung).
 3. (Optional) Lade ein App-Logo hoch.
 4. Füge den **Link zu deinem GitHub-Repository** (als HTTPS-Link) ein.
-5. **Sichtbarkeit:** Als Student hast du *nicht* die Berechtigung, Apps "Privat" zu halten und selbst zu deployen. Die Sichtbarkeit muss auf **Öffentlich** gestellt werden. Das bedeutet, die App wird nach einer Prüfung für alle Nutzer im Store sichtbar.
+5. **Sichtbarkeit:** Du kannst zwischen **Öffentlich** und **Privat** wählen. "Privat" eignet sich besonders gut, wenn du eine App gerade erst entwickelst und sie zunächst nur anlegen möchtest. **Wichtiger Hinweis:** Auch wenn du eine App auf "Privat" stellst, hast du als Student *nicht* die Berechtigung, selbst ein Deployment dafür zu starten. Wählst du hingegen "Öffentlich", wird die App nach einer Prüfung durch einen Admin für alle Nutzer im Store sichtbar.
 6. Hake die Option **"Alle Versionen einreichen"** an, damit deine Git-Tags als Versionen an einen Admin zur Überprüfung (Review) gesendet werden.
-
-> **Wichtiger Hinweis (GitHub Collaborator):** Bevor du die App speicherst, musst du zwingend den technischen User `six7-click-n-deploy` als Collaborator zu deinem eigenen GitHub-Repository hinzufügen. Dies wird dir auch in einem blauen Infokasten auf der Seite angezeigt.
-
-Klicke abschließend auf **Hinzufügen**. Die App taucht nun in der Übersicht auf und wartet auf die Freigabe durch einen Administrator.
+7. **GitHub Collaborator (nur bei privaten Repositories):** Wenn dein verlinktes GitHub-Repository *privat* ist, musst du zwingend den technischen User `six7-click-n-deploy` als Collaborator zu deinem Repository hinzufügen. Bei einem öffentlichen Repository kannst du diesen Schritt überspringen. 
+8. Klicke abschließend auf **Hinzufügen**. Die App taucht nun in der Übersicht auf und wartet (sofern sie öffentlich ist) auf die Freigabe durch einen Administrator.
 
 <figure style="margin-bottom: 30px;">
-  <img src="img/App_hinzufügen.png" alt="App hinzufügen" width="80%">
+  <img src="img/App_hinzufuegen.png" alt="App hinzufügen" width="80%">
   <figcaption style="font-size: 0.9em; color: #555;">App hinzufügen: Einreichen einer neuen App für den Store</figcaption>
 </figure>
+
+---
+
+### App-Details einsehen
+
+Wenn du in der App-Übersicht auf eine der angezeigten Kacheln klickst, öffnet sich die Detailseite der jeweiligen App. Diese Seite bietet dir einen umfassenden Einblick in die Anwendung und ihre Releases.
+
+**Allgemeine Übersicht (Kopfbereich):**
+Direkt oben auf der Seite siehst du neben dem Namen und dem Logo der App auf einen Blick, **wie viele Versionen verfügbar** sind. Daneben findest du auch den direkten **Link zum dazugehörigen GitHub-Repository**.
+
+**Die App-Beschreibung (Vom Entwickler definiert):**
+Der große Hauptbereich der Seite beinhaltet die allgemeine Beschreibung der App. **Wichtig zu wissen:** Diese Inhalte werden vom jeweiligen App-Entwickler (Admin/Lehrer) beim Erstellen der App frei festgelegt. Je nach App kannst du hier unterschiedliche, spezifische Informationen finden, wie zum Beispiel:
+* Erklärungen zu Features, dem User-Management oder dem VM-Deployment
+* Schätzungen zur Deployment-Dauer
+* Erklärungen zu konfigurierbaren Variablen oder benötigten Aufgabendateien
+
+**Feste Metadaten und Versionsinfos:**
+Im unteren Bereich der Seite findest du fest definierte Blöcke mit Systeminformationen:
+* **App Informationen:** Zeigt an, wann und von wem die App initial erstellt wurde.
+* **Versionsdetails:** Liefert technische Daten zur aktuell ausgewählten Version (z. B. Typ, Commit-Hash, Autor, Veröffentlichungsdatum und Link zum Release).
+* **Versionsbeschreibung:** Beinhaltet spezifische Notizen oder Release Notes, die genau zu der ausgewählten Version gehören.
+
+**Versionsauswahl und Deployment-Funktion:**
+Auf der rechten Seite deines Bildschirms befindet sich eine fixierte Box zur Versionssteuerung.
+
+Über das Dropdown-Menü **Version auswählen** kannst du durch alle verfügbaren Releases der App navigieren. Sobald du eine andere Version auswählst, aktualisieren sich die Blöcke "Versionsdetails" und "Versionsbeschreibung" auf der linken Seite automatisch passend zu deiner Auswahl.
+
+> **Wichtiger Hinweis zum "Jetzt Deployen"-Button:** Unter der Versionsauswahl befindet sich ein Button, um ein Deployment zu starten. Da du als Student keine Berechtigung für eigene Deployments hast, ist dieser Button für dich **gesperrt bzw. ohne Funktion**. Diese Ansicht dient für dich rein der Information; nur Lehrkräfte und Admins können den Deployment-Prozess tatsächlich auslösen.
+
+<figure style="margin-bottom: 30px;">
+  <img src="img/Bildschirmfoto 2026-07-23 um 17.47.50.jpg" alt="Detailseite einer App" width="80%">
+  <figcaption style="font-size: 0.9em; color: #555;">App-Details: Übersicht, Entwickler-Beschreibung und Versionsauswahl</figcaption>
+</figure>
+
+---
 
 ### Deployments und Zugangsdaten einsehen
 
 **Wichtig:** Als Student kannst du *keine* eigenen Deployments starten oder konfigurieren. Diese Aufgabe übernehmen Lehrkräfte oder Admins für dich.
 
-Du kannst jedoch über den Menüpunkt **Deployments** in der linken Seitenleiste alle Deployments einsehen, denen du (bzw. dein Team) zugewiesen wurdest.
+Du kannst jedoch über den Menüpunkt **Deployments** in der linken Seitenleiste (oder den Fastlink auf dem Dashboard) alle Deployments einsehen, denen du (bzw. dein Team) zugewiesen wurdest.
 
 * **Übersicht:** Hier siehst du eine Liste der aktiven Deployments inklusive Status (z. B. "Erfolgreich").
 * **Details & Zugangsdaten:** Klicke auf ein Deployment, um die Details zu öffnen. Du siehst Informationen zur genutzten App, dem Besitzer (Lehrkraft/Admin) und der Team-Zuteilung.
