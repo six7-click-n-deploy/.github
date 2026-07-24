@@ -179,6 +179,38 @@ Auf der rechten Seite deines Bildschirms befindet sich eine fixierte Box zur Ver
   <figcaption style="font-size: 0.9em; color: #555;">App-Details: Übersicht, Entwickler-Beschreibung und Versionsauswahl</figcaption>
 </figure>
 
+Wenn du die App selbst hinzugefügt hast (du also der Besitzer bist), stehen dir auf der Detailseite zusätzliche Verwaltungsfunktionen zur Verfügung.
+
+**App-Informationen anpassen oder App löschen:**
+Oben rechts auf der Übersichtsseite findest du die Buttons **Bearbeiten** und **Löschen**.
+* Ein Klick auf "Bearbeiten" öffnet ein Pop-up-Fenster, in dem du den **Namen**, die **Beschreibung** sowie das **Logo** der App nachträglich aktualisieren kannst.
+* *Wichtig:* Das verknüpfte GitHub-Repository kann nach der initialen Erstellung nicht mehr geändert werden.
+
+<figure style="margin-bottom: 30px;">
+  <img src="img/Student_App_Detail_Besitzer1.jpg" alt="Übersichtsseite mit Bearbeiten-Button" width="80%">
+  <figcaption style="font-size: 0.9em; color: #555;">App-Übersicht für Besitzer: Die Schaltflächen zum Bearbeiten und Löschen befinden sich oben rechts.</figcaption>
+</figure>
+
+<figure style="margin-bottom: 30px;">
+  <img src="img/Student_App_Detail_Besitzer2.jpg" alt="Pop-up zum Bearbeiten der App" width="80%">
+  <figcaption style="font-size: 0.9em; color: #555;">App bearbeiten: In diesem Modal lassen sich Name, Beschreibung und Logo jederzeit anpassen.</figcaption>
+</figure>
+
+**App Store Sichtbarkeit und Versionen einreichen:**
+Neben dem Reiter "Übersicht" gibt es für deine eigenen Apps den zusätzlichen Reiter **App Store**. Hier steuerst du die Veröffentlichung:
+* **Status "Privat":** Solange der Schalter auf "Privat" steht, ist die App nur für dich sichtbar. In diesem Modus können keine Versionen zur Prüfung eingereicht werden.
+* **Status "Öffentlich":** Wechselst du die Sichtbarkeit per Schalter auf "Öffentlich", erscheint unten der Bereich "Freigabe-Status der Versionen". Hier siehst du alle verfügbaren Git-Tags (Versionen) deiner App. Über den Textlink **Zur Prüfung einreichen** kannst du einzelne Versionen an die Administratoren zur Kontrolle senden. Erst nach einer erfolgreichen Freigabe können andere Nutzer diese App deployen.
+
+<figure style="margin-bottom: 30px;">
+  <img src="img/Student_App_Detail_Besitzer3.jpg" alt="App Store Sichtbarkeit auf Privat" width="80%">
+  <figcaption style="font-size: 0.9em; color: #555;">Sichtbarkeit Privat: Die App ist im Store verborgen und es können noch keine Versionen eingereicht werden.</figcaption>
+</figure>
+
+<figure style="margin-bottom: 30px;">
+  <img src="img/Student_App_Detail_Besitzer4.jpg" alt="App Store Sichtbarkeit auf Öffentlich" width="80%">
+  <figcaption style="font-size: 0.9em; color: #555;">Sichtbarkeit Öffentlich: Nach dem Umstellen können die verfügbaren Versionen zur Admin-Prüfung eingereicht werden.</figcaption>
+</figure>
+
 ---
 
 ### Deployments und Zugangsdaten einsehen
