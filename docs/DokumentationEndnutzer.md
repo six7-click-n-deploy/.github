@@ -45,11 +45,10 @@ Die folgende Tabelle gibt einen schnellen Überblick über die Berechtigungen de
 | Öffentliche Apps einsehen | ✅ | ✅ | ✅ |
 | Private Apps einsehen | ✅ (Nur eigene) | ✅ (Nur eigene) | ✅ (Alle) |
 | Neue Apps hinzufügen (zur Prüfung einreichen) | ✅ | ✅ | ✅ |
-| Sichtbarkeit einer App auf "Privat" stellen | ✅ (Nur eigene) | ✅ (Nur eigene) | ✅ |
+| Sichtbarkeit einer App auf "Privat" stellen | ✅ (Nur eigene) | ✅ (Nur eigene) | ✅ (Alle) |
 | App-Versionen freigeben, ablehnen oder widerrufen | ❌ | ❌ | ✅ |
 | Neue Deployments konfigurieren und starten | ❌ | ✅ | ✅ |
-| Eigene Deployments einsehen | ❌ | ✅ | ✅ |
-| Alle Deployments (von sämtlichen Nutzern) einsehen | ❌ | ❌ | ✅ |
+| Deployments einsehen | ❌ | ✅ (Nur eigene) | ✅ (Alle) |
 | Eigene Logindaten in zugewiesenen Deployments einsehen | ✅ | ✅ | ✅ |
 | Logindaten aller Mitglieder eines Deployments einsehen | ❌ | ✅ (als Besitzer) | ✅ |
 | Kurse erstellen und Mitglieder verwalten | ❌ | ✅ | ✅ |
@@ -133,9 +132,9 @@ Zusätzlich findest du hier unter dem Punkt "Einstellungen" jederzeit den Link z
 2. Vergib einen **Namen** und trage eine **Beschreibung** ein (Markdown wird hierbei unterstützt, eine Live-Vorschau hilft dir bei der Formatierung).
 3. (Optional) Lade ein App-Logo hoch.
 4. Füge den **Link zu deinem GitHub-Repository** (als HTTPS-Link) ein.
-5. **Sichtbarkeit:** Du kannst zwischen **Öffentlich** und **Privat** wählen. "Privat" eignet sich besonders gut, wenn du eine App gerade erst entwickelst und sie zunächst nur anlegen möchtest. **Wichtiger Hinweis:** Auch wenn du eine App auf "Privat" stellst, hast du als Student *nicht* die Berechtigung, selbst ein Deployment dafür zu starten. Wählst du hingegen "Öffentlich", wird die App nach einer Prüfung durch einen Admin für alle Nutzer im Store sichtbar.
+5. **Sichtbarkeit:** Du kannst zwischen **Öffentlich** und **Privat** wählen. "Privat" eignet sich besonders gut, wenn du eine App gerade erst entwickelst und sie zunächst nur anlegen möchtest. **Hinweis:** Auch wenn du eine App auf "Privat" stellst, hast du als Student *nicht* die Berechtigung, selbst ein Deployment dafür zu starten. Wählst du hingegen "Öffentlich", wird die App nach einer Prüfung durch einen Admin für alle Nutzer im Store sichtbar.
 6. Hake die Option **"Alle Versionen einreichen"** an, damit deine Git-Tags als Versionen an einen Admin zur Überprüfung (Review) gesendet werden.
-7. **GitHub Collaborator (nur bei privaten Repositories):** Wenn dein verlinktes GitHub-Repository *privat* ist, musst du zwingend den technischen User `six7-click-n-deploy` als Collaborator zu deinem Repository hinzufügen. Bei einem öffentlichen Repository kannst du diesen Schritt überspringen. 
+7. **GitHub Collaborator (nur bei privaten Repositories):** Wenn dein verlinktes GitHub-Repository *privat* ist, musst du zwingend den technischen User `six7clickndeploy` als Collaborator zu deinem Repository hinzufügen. Bei einem öffentlichen Repository kannst du diesen Schritt überspringen. 
 8. Klicke abschließend auf **Hinzufügen**. Die App taucht nun in der Übersicht auf und wartet (sofern sie öffentlich ist) auf die Freigabe durch einen Administrator.
 
 <figure style="margin-bottom: 30px;">
@@ -169,7 +168,7 @@ Auf der rechten Seite deines Bildschirms befindet sich eine fixierte Box zur Ver
 
 Über das Dropdown-Menü **Version auswählen** kannst du durch alle verfügbaren Releases der App navigieren. Sobald du eine andere Version auswählst, aktualisieren sich die Blöcke "Versionsdetails" und "Versionsbeschreibung" auf der linken Seite automatisch passend zu deiner Auswahl.
 
-> **Wichtiger Hinweis zum "Jetzt Deployen"-Button:** Unter der Versionsauswahl befindet sich ein Button, um ein Deployment zu starten. Da du als Student keine Berechtigung für eigene Deployments hast, ist dieser Button für dich **gesperrt bzw. ohne Funktion**. Diese Ansicht dient für dich rein der Information; nur Lehrkräfte und Admins können den Deployment-Prozess tatsächlich auslösen.
+> **Hinweis zum "Jetzt Deployen"-Button:** Unter der Versionsauswahl befindet sich ein Button, um ein Deployment zu starten. Da du als Student keine Berechtigung für eigene Deployments hast, ist dieser Button für dich **gesperrt bzw. ohne Funktion**. Diese Ansicht dient für dich rein der Information; nur Lehrkräfte und Admins können den Deployment-Prozess tatsächlich auslösen.
 
 <figure style="margin-bottom: 30px;">
   <img src="img/App_Details_1.png" alt="Detailseite einer App" width="80%">
@@ -294,7 +293,7 @@ Zusätzlich findest du hier unter dem Punkt "Einstellungen" jederzeit den Link z
 4. Füge den **Link zu deinem GitHub-Repository** (als HTTPS-Link) ein.
 5. **Sichtbarkeit:** Du kannst zwischen **Öffentlich** und **Privat** wählen. "Privat" eignet sich besonders gut, wenn du eine App gerade erst entwickelst und sie zunächst nur anlegen möchtest. 
 6. Hake die Option **"Alle Versionen einreichen"** an, damit deine Git-Tags als Versionen an einen Admin zur Überprüfung (Review) gesendet werden.
-7. **GitHub Collaborator (nur bei privaten Repositories):** Wenn dein verlinktes GitHub-Repository *privat* ist, musst du zwingend den technischen User `six7-click-n-deploy` als Collaborator zu deinem Repository hinzufügen. Bei einem öffentlichen Repository kannst du diesen Schritt überspringen. 
+7. **GitHub Collaborator (nur bei privaten Repositories):** Wenn dein verlinktes GitHub-Repository *privat* ist, musst du zwingend den technischen User `six7clickndeploy` als Collaborator zu deinem Repository hinzufügen. Bei einem öffentlichen Repository kannst du diesen Schritt überspringen. 
 8. Klicke abschließend auf **Hinzufügen**. Die App taucht nun in der Übersicht auf und wartet (sofern sie öffentlich ist) auf die Freigabe durch einen Administrator.
 
 <figure style="margin-bottom: 30px;">
@@ -655,7 +654,7 @@ Zusätzlich findest du hier unter dem Punkt "Einstellungen" jederzeit den Link z
 5. **Sichtbarkeit:** Entscheide, ob die App **Privat** oder **Öffentlich** sein soll:
    - **Privat:** Nach der Freigabe ist die App nur für dich im Store sichtbar.
    - **Öffentlich:** Nach der Freigabe ist die App für alle Nutzer im Store sichtbar.
-6. Falls dein GitHub-Repository privat ist, musst du vor dem Speichern den technischen User `six7-click-n-deploy` als Collaborator zum Repository hinzufügen.
+6. Falls dein GitHub-Repository privat ist, musst du vor dem Speichern den technischen User `six7clickndeploy` als Collaborator zum Repository hinzufügen.
 7. Hake die Option **"Alle Versionen einreichen"** an, damit deine Git-Tags als Versionen für das Review übermittelt werden.
 
 Klicke abschließend auf **Hinzufügen**. Die App wird angelegt und befindet sich nun im Status „Wartet auf Freigabe“. Als Admin kannst du die App im nächsten Schritt direkt selbst (oder durch einen anderen Admin) prüfen und genehmigen.
