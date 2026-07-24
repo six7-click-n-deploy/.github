@@ -187,12 +187,12 @@ Oben rechts auf der Übersichtsseite findest du die Buttons **Bearbeiten** und *
 * *Wichtig:* Das verknüpfte GitHub-Repository kann nach der initialen Erstellung nicht mehr geändert werden.
 
 <figure style="margin-bottom: 30px;">
-  <img src="img/Student_App_Detail_Besitzer1.jpg" alt="Übersichtsseite mit Bearbeiten-Button" width="80%">
+  <img src="img/Student_App_Detail_Besitzer1.png" alt="Übersichtsseite mit Bearbeiten-Button" width="80%">
   <figcaption style="font-size: 0.9em; color: #555;">App-Übersicht für Besitzer: Die Schaltflächen zum Bearbeiten und Löschen befinden sich oben rechts.</figcaption>
 </figure>
 
 <figure style="margin-bottom: 30px;">
-  <img src="img/Student_App_Detail_Besitzer2.jpg" alt="Pop-up zum Bearbeiten der App" width="80%">
+  <img src="img/Student_App_Detail_Besitzer2.png" alt="Pop-up zum Bearbeiten der App" width="80%">
   <figcaption style="font-size: 0.9em; color: #555;">App bearbeiten: In diesem Modal lassen sich Name, Beschreibung und Logo jederzeit anpassen.</figcaption>
 </figure>
 
@@ -202,12 +202,12 @@ Neben dem Reiter "Übersicht" gibt es für deine eigenen Apps den zusätzlichen 
 * **Status "Öffentlich":** Wechselst du die Sichtbarkeit per Schalter auf "Öffentlich", erscheint unten der Bereich "Freigabe-Status der Versionen". Hier siehst du alle verfügbaren Git-Tags (Versionen) deiner App. Über den Textlink **Zur Prüfung einreichen** kannst du einzelne Versionen an die Administratoren zur Kontrolle senden. Erst nach einer erfolgreichen Freigabe können andere Nutzer diese App deployen.
 
 <figure style="margin-bottom: 30px;">
-  <img src="img/Student_App_Detail_Besitzer3.jpg" alt="App Store Sichtbarkeit auf Privat" width="80%">
+  <img src="img/Student_App_Detail_Besitzer3.png" alt="App Store Sichtbarkeit auf Privat" width="80%">
   <figcaption style="font-size: 0.9em; color: #555;">Sichtbarkeit Privat: Die App ist im Store verborgen und es können noch keine Versionen eingereicht werden.</figcaption>
 </figure>
 
 <figure style="margin-bottom: 30px;">
-  <img src="img/Student_App_Detail_Besitzer4.jpg" alt="App Store Sichtbarkeit auf Öffentlich" width="80%">
+  <img src="img/Student_App_Detail_Besitzer4.png" alt="App Store Sichtbarkeit auf Öffentlich" width="80%">
   <figcaption style="font-size: 0.9em; color: #555;">Sichtbarkeit Öffentlich: Nach dem Umstellen können die verfügbaren Versionen zur Admin-Prüfung eingereicht werden.</figcaption>
 </figure>
 
