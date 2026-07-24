@@ -726,8 +726,6 @@ Als Admin siehst du hier **alle** bisher angelegten Apps – unabhängig davon, 
 
 Wenn du in der App-Übersicht auf eine der angezeigten Kacheln klickst, öffnet sich die Detailseite der jeweiligen App. Diese Seite bietet dir einen umfassenden Einblick in die Anwendung, ihre Releases sowie administrative Verwaltungsmöglichkeiten.
 
-> **Admin-Aktionen:** In der Detailansicht findest du oben rechts jederzeit die Buttons, um die ausgewählte App zu **bearbeiten** oder vollständig zu **löschen**.
-
 ---
 
 ### Tab: Übersicht
@@ -736,6 +734,7 @@ Dieser Tab ist in verschiedene Bereiche unterteilt, die dir sowohl inhaltliche a
 
 #### 1. Kopfbereich (Allgemeine Übersicht)
 Direkt oben auf der Seite siehst du neben dem Namen und dem Logo der App auf einen Blick, **wie viele Versionen verfügbar** sind. Daneben findest du auch den direkten **Link zum dazugehörigen GitHub-Repository**.
+In der Detailansicht findest du zudem oben rechts jederzeit die Buttons, um die ausgewählte App zu **bearbeiten** oder vollständig zu **löschen**.
 
 #### 2. App-Beschreibung (Vom Entwickler definiert)
 Der große Hauptbereich beinhaltet die Beschreibung der App. Diese Inhalte werden vom jeweiligen Entwickler beim Erstellen der App frei festgelegt. Hier findest du spezifische Informationen wie zum Beispiel:
@@ -816,7 +815,7 @@ In der Kursverwaltung siehst du standardmäßig alle Kurse, die du selbst erstel
 
 **Kurse löschen:** Auf der Übersichtsseite deiner Kurse befindet sich in jeder Kachel deiner Kurse ein Mülleimer-Symbol. Klicke darauf, um diesen Kurs zu löschen und bestätige mit klick auf Löschen.
 
-> **Wichtiger Hinweis (Kurszuweisung):** Jeder Studierende kann immer nur in *einem* Kurs sein. Fügst du jemanden hinzu, der bereits in einem anderen Kurs eingetragen ist, wird die Person automatisch in den neuen Kurs verschoben und aus dem bisherigen entfernt.
+> **Hinweis (Kurszuweisung):** Jeder Studierende kann immer nur in *einem* Kurs sein. Fügst du jemanden hinzu, der bereits in einem anderen Kurs eingetragen ist, wird die Person automatisch in den neuen Kurs verschoben und aus dem bisherigen entfernt.
 
 
 <figure style="margin-bottom: 30px;">
@@ -837,9 +836,9 @@ Die Deployments werden als Kacheln angezeigt.
   <figcaption style="font-size: 0.9em; color: #555;">Übersicht über alle Deployments</figcaption>
 </figure>
 
-### Deployment erstellen
+### Deployments erstellen
 
-> **Wichtiger Hinweis (Deployment erstellen):** Um ein Deployment zu erstellen, muss im Vorfeld bereits eine App angelegt und freigegeben worden sein.
+> **Hinweis (Deployment erstellen):** Um ein Deployment zu erstellen, muss im Vorfeld bereits eine App angelegt und freigegeben worden sein.
 
 1. Klicke in der Deployment-Übersicht oben rechts auf den Button **+ Neues Deployment**. 
 
@@ -876,21 +875,16 @@ Die Deployments werden als Kacheln angezeigt.
 </figure>
 
 
-5. Im Schritt Variablen-Konfiguration können nun spezifische Packer- oder Terraform-Variablen angepasst werden (abhängig von der jeweiligen App). Die Eingabefelder hängen dabei von der jeweiligen Variablen-Konfiguration ab.
-   * **Standardwerte (Defaults):** Die Variablen sind bereits mit Standardwerten des App-Erstellers vorausgefüllt. 
+5. Im Schritt Variablen können nun spezifische Packer- oder Terraform-Variablen angepasst werden (abhängig von der jeweiligen App). Die Eingabefelder hängen dabei von der jeweiligen Variablen-Konfiguration ab.
+   * **Standardwerte (Defaults):** Die Variablen sind bereits mit Standardwerten des App-Erstellers vorausgefüllt. Diese Defaults funktionieren nur dann fehlerfrei, wenn es Überschneidungen zwischen der Cloud-Umgebung des App-Erstellers und deinem eigenen OpenStack-Account gibt (z. B. wenn in beiden Systemen identische Bezeichnungen für Netzwerke oder Flavors existieren). Gibt es diese Überschneidungen nicht, müssen die Standardwerte zwingend an deine eigene Cloud-Umgebung angepasst werden.
    * **Value help:** Erfordert eine Variable eine spezifische Open-Stack Ressource (z.B. ein Netzwerk oder Flavor), nutzt das System die hinterlegten Credentials (z.B aus der clouds.yaml). Über diese Zugangsdaten werden die in OpenStack verfügbaren Ressourcen live abgerufen und als Dropdown-Menü bereitgestellt.
    * **Geltungsbereich (Scope) der Variablen:** Je nach App-Konfiguration werden Variablen in drei verschiedenen Scopes abgefragt.
      * **Alle:** Die Variable wird einmalig definiert und gilt für das gesamte Deployment.
      * **Team:** Die Variable muss für jede Gruppe separat definiert werden.
      * **User:** Die Variable muss für jeden User separat definiert werden.
    * **Info-Button:** Über das Info-Symbol (i) neben dem Variablennamen lässt sich ein Tooltip aufrufen. Dieser enthält die genaue Beschreibung der Variable und Formatierungshinweise.
-   * **Datei-Uploads:** Je nach App können Dateien hochgeladen werden. Diese können per Drag-and-Drop oder per Klick eingefügt werden. Auch hier kann der Upload für alle, pro Team oder pro User erfolgen. Hierbei sollte auf die Dateiendung geachtet werden.
+   * **Datei-Uploads:** Je nach App können Dateien hochgeladen werden. Diese können per Drag-and-Drop oder per Klick eingefügt werden. Auch hier kann der Upload für alle, pro Team oder pro User erfolgen. Hierbei sollte auf die Dateiendung geachtet werden. Eine einzelne Datei darf **maximal 2MB** groß sein und das Gesamtvolumen **maximal 10MB**.
 
-> **Wichtiger Hinweis (Standardwerte (Defaults)):**  Diese Defaults funktionieren nur dann fehlerfrei, wenn es Überschneidungen zwischen der Cloud-Umgebung des App-Erstellers und deinem eigenen OpenStack-Account gibt (z. B. wenn in beiden Systemen identische Bezeichnungen für Netzwerke oder Flavors existieren). Gibt es diese Überschneidungen nicht, müssen die Standardwerte zwingend an deine eigene Cloud-Umgebung angepasst werden.
-
-> **Wichtiger Hinweis (Upload Limit):** Eine einzelne Datei darf **maximal 2MB** groß sein und das Gesamtvolumen **maximal 10MB**.
-
-> **Wichtiger Hinweis (Web Anwendungen (z.B. pgadmin, Web-Latex)):** Wenn eine Applikation eine Web-Oberfläche bereitstellt, muss bei der Auswahl der Security Group (z.B. bei der Variable shared_secgroup_id) darauf geachtet werden, dass sie für HTTP-Zugriffe ausgelegt ist. Sie benötigt eine Eintritts-Regel für TCP auf Port 80 (HTTP) von 0.0.0.0/0. Fehlt diese Regel, sind die Web-Oberflächen nach dem Deployment nicht erreichbar.
 
 <figure style="margin-bottom: 30px;">
   <img src="img/Variablen_Konfiguration.png" alt="Variablen konfigurieren" width="80%">
@@ -902,6 +896,8 @@ Die Deployments werden als Kacheln angezeigt.
   <figcaption style="font-size: 0.9em; color: #555;">Dropdown und Dateiupload</figcaption>
 </figure>
 
+> **Hinweis (Web Anwendungen (z.B. pgadmin, Web-Latex)):** Wenn eine Applikation eine Web-Oberfläche bereitstellt, muss bei der Auswahl der Security Group (z.B. bei der Variable shared_secgroup_id) darauf geachtet werden, dass sie für HTTP-Zugriffe ausgelegt ist. Sie benötigt eine Eintritts-Regel für TCP auf Port 80 (HTTP) von 0.0.0.0/0. Fehlt diese Regel, sind die Web-Oberflächen nach dem Deployment nicht erreichbar.
+
 6. Den Abschluss des Deployment-Prozesses bildet die Übersichts-Seite. Hier findest du eine Zusammenfassung deiner Auswahl: Basis-Konfigurationen, Team-Zuweisung und die Variablen-Konfiguration. Falls du noch etwas anpassen möchtest, kannst du unten links über den Button **Zurück** jederzeit einen Schritt im Prozess zurückgehen. Ist alles korrekt, klicke unten rechts auf **Deployen**, um den Vorgang abzuschließen.
 
 
@@ -909,6 +905,8 @@ Die Deployments werden als Kacheln angezeigt.
   <img src="img/Summary.png" alt="Übersicht" width="80%">
   <figcaption style="font-size: 0.9em; color: #555;">Übersicht: Zusammenfassung der Basis-Konfigurationen, Team-Zuteilung und Varianlen-Konfiguration</figcaption>
 </figure>
+
+---
 
 ### Deployments und Zugangsdaten einsehen
 
@@ -957,8 +955,9 @@ In diesem Bereich verwaltest du die für das Deployment genutzten Virtuellen Mas
 Hier erhältst du transparente Einblicke in den technischen Ablauf und den aktuellen Status:
 
 * **Task-Übersicht:** Listet alle ausgeführten Tasks mit Status, Typ sowie Start- und Endzeitstempel auf.
-* **Echtzeit-Logs:** Verfolge laufende Deployments live mit. Die Logs enthalten Zeitstempel, Kategorien sowie die direkten Konsolenausgaben von Terraform und Packer. Über das Kopieren-Symbol kannst du den gesamten Log in deine Zwischenablage übernehmen.
+* **Logs:** Die Logs enthalten Zeitstempel, Kategorien sowie die direkten Konsolenausgaben von Terraform und Packer. Über das Kopieren-Symbol kannst du den gesamten Log in deine Zwischenablage übernehmen.
 * **Terraform-State:** In den Infrastruktur-Details findest du den rohen Terraform-State im JSON-Format (z. B. für technische Details und Output-Werte). Auch dieser lässt sich per Klick direkt in die Zwischenablage kopieren.
+
 
 <figure style="margin-bottom: 30px;">
   <img src="img/Depl_logs.png" alt="Deployment Übersicht Tasks & Logs" width="80%">
@@ -968,6 +967,20 @@ Hier erhältst du transparente Einblicke in den technischen Ablauf und den aktue
 <figure style="margin-bottom: 30px;">
   <img src="img/Depl_logs2.png" alt="Deployment Übersicht Terraform Logs" width="80%">
   <figcaption style="font-size: 0.9em; color: #555;">Deployment-Übersicht: Terraform State (JSON)</figcaption>
+</figure>
+
+#### Echtzeit-Logs
+
+Während des eines Deployments kannst du in der Deployment Detailseite mit Echtzeit-Logs den Status überprüfen. Du kannst hier verfolgen in welchem Schritt das Deployment gerade ist und in den Logs diese nachvollziehen.
+
+<figure style="margin-bottom: 30px;">
+  <img src="img/live_logs.png" alt="Echtzeit-Logs" width="80%">
+  <figcaption style="font-size: 0.9em; color: #555;">Echtzeit-Logs</figcaption>
+</figure>
+
+<figure style="margin-bottom: 30px;">
+  <img src="img/live_logs2.png" alt="Echtzeit-Logs Details" width="80%">
+  <figcaption style="font-size: 0.9em; color: #555;">Echtzeit-Logs Details</figcaption>
 </figure>
 
 ### App-Freigaben verwalten
