@@ -45,7 +45,7 @@ Die folgende Tabelle gibt einen schnellen Überblick über die Berechtigungen de
 | Öffentliche Apps einsehen | ✅ | ✅ | ✅ |
 | Private Apps einsehen | ✅ (Nur eigene) | ✅ (Nur eigene) | ✅ (Alle) |
 | Neue Apps hinzufügen (zur Prüfung einreichen) | ✅ | ✅ | ✅ |
-| Sichtbarkeit einer App auf "Privat" stellen | ✅ | ✅ | ✅ |
+| Sichtbarkeit einer App auf "Privat" stellen | ✅ (Nur eigene) | ✅ (Nur eigene) | ✅ |
 | App-Versionen freigeben, ablehnen oder widerrufen | ❌ | ❌ | ✅ |
 | Neue Deployments konfigurieren und starten | ❌ | ✅ | ✅ |
 | Eigene Deployments einsehen | ❌ | ✅ | ✅ |
@@ -385,9 +385,11 @@ In der Kursverwaltung siehst du standardmäßig alle Kurse, die du selbst erstel
 
 ---
 
-### Deployments erstellen
+### Deployments
 
 Über den Menüpunkt **Deployments** in der linken Seitenleiste findest du alle Deployments, die du erstellt hast.
+
+### Deployments erstellen
 
 > **Wichtiger Hinweis (Deployment erstellen):** Um ein Deployment zu erstellen, muss im Vorfeld bereits eine App angelegt und freigegeben worden sein.
 
@@ -546,9 +548,19 @@ Willkommen im App Store! Diese Dokumentation führt dich durch die wichtigsten F
 
 Der Einstieg in die Plattform erfolgt über den regulären Login. Du kannst dich entweder mit deinem **Benutzernamen und Passwort** oder deiner **E-Mail-Adresse und Passwort** anmelden.
 
+<figure style="margin-bottom: 30px;">
+  <img src="img/Login.png" alt="Login" width="80%">
+  <figcaption style="font-size: 0.9em; color: #555;">Keycloak Login</figcaption>
+</figure>
+
 Nach erfolgreichem Login landest du direkt auf dem **Dashboard**. Hier erhältst du einen schnellen Überblick über:
-* Deine zugewiesenen Deployments und verfügbaren Apps.
+* Deine zugewiesenen Deployments und verfügbaren Apps und Kurse.
 * Deine verfügbaren und genutzten OpenStack-Ressourcen (z. B. VMs, RAM, Storage, Floating IPs).
+
+<figure style="margin-bottom: 30px;">
+  <img src="img/Dashboard_admin.png" alt="Login" width="80%">
+  <figcaption style="font-size: 0.9em; color: #555;">Keycloak Login</figcaption>
+</figure>
 
 **Erstanmeldung:** Wenn du dich zum ersten Mal anmeldest, fehlen dem System noch deine OpenStack-Zugangsdaten. Dies wird dir direkt oben auf dem Dashboard durch einen gelb hinterlegten Hinweis ("OpenStack-Credentials fehlen") signalisiert. Klicke dort auf den Button **Jetzt einrichten**, um deine Daten zu hinterlegen.
 
@@ -614,8 +626,8 @@ Zusätzlich findest du hier unter dem Punkt "Einstellungen" jederzeit den Link z
 Klicke abschließend auf **Hinzufügen**. Die App wird angelegt und befindet sich nun im Status „Wartet auf Freigabe“. Als Admin kannst du die App im nächsten Schritt direkt selbst (oder durch einen anderen Admin) prüfen und genehmigen.
 
 <figure style="margin-bottom: 30px;">
-  <img src="img/App_hinzufügen.png" alt="App hinzufügen" width="80%">
-  <figcaption style="font-size: 0.9em; color: #555;">App hinzufügen: Anlegen und Einreichen einer neuen App</figcaption>
+  <img src="img/App_hinzufuegen.png" alt="App hinzufügen" width="80%">
+  <figcaption style="font-size: 0.9em; color: #555;">App hinzufügen: Einreichen einer neuen App für den Store</figcaption>
 </figure>
 
 ---
@@ -630,6 +642,17 @@ Als Admin siehst du hier **alle** bisher angelegten Apps – unabhängig davon, 
 * **Kennzeichnung privater Apps:** 
   * Deine eigenen privaten Apps sind mit einem violetten Label (Privat) gekennzeichnet.
   * **Private Apps anderer Nutzer** besitzen dieses Label nicht, werden dir als Admin in der Liste aber dennoch angezeigt.
+
+  <figure style="margin-bottom: 30px;">
+  <img src="img/Overview_Apps_admin.png" alt="App hinzufügen" width="80%">
+  <figcaption style="font-size: 0.9em; color: #555;">App-Übersicht (Allgemein)</figcaption>
+</figure>
+
+
+ <figure style="margin-bottom: 30px;">
+  <img src="img/Overview_private_Apps_admin.png" alt="App hinzufügen" width="80%">
+  <figcaption style="font-size: 0.9em; color: #555;">App-Übersicht: Private Apps</figcaption>
+</figure>
 
 ---
 
@@ -670,6 +693,13 @@ Auf der rechten Seite befindet sich eine fixierte Box zur Versionssteuerung und 
 * **Versionsauswahl:** Über das Dropdown-Menü *Version auswählen* kannst du durch alle verfügbaren Releases navigieren. Die Blöcke "Versionsdetails" und "Versionsbeschreibung" passen sich automatisch deiner Auswahl an.
 * **App deployen:** Anders als reguläre Nutzer (z. B. Studenten) hast du als Admin die Berechtigung, den Deployment-Prozess zu starten. Wähle dazu einfach die gewünschte Version aus und klicke auf den Button **Jetzt Deployen**.
 
+ <figure style="margin-bottom: 30px;">
+  <img src="img/App_Details_1_admin.png" alt="App hinzufügen" width="80%">
+  <figcaption style="font-size: 0.9em; color: #555;">App-Details - Tab: Übersicht</figcaption>
+</figure>
+
+ 
+
 ### Tab: App Store (Sichtbarkeit & Freigabe)
 
 In diesem Tab verwaltest du die Sichtbarkeit der App im Store sowie deren Freigabe-Einstellungen:
@@ -683,6 +713,11 @@ In diesem Tab verwaltest du die Sichtbarkeit der App im Store sowie deren Freiga
   Entzieht der Allgemeinheit den Zugriff auf die App.
   * **Eigene App:** Ist nach der Umstellung nur noch für dich sichtbar.
   * **App eines anderen Nutzers:** Ist nach der Umstellung nur noch für dich (als Admin) und den ursprünglichen Ersteller sichtbar.
+
+  <figure style="margin-bottom: 30px;">
+  <img src="img/App_Details_2_admin.png" alt="App hinzufügen" width="80%">
+  <figcaption style="font-size: 0.9em; color: #555;">App-Details - Tab: App Store</figcaption>
+</figure>
 
 ---
 
@@ -816,6 +851,8 @@ Durch einen Klick auf ein beliebiges Deployment in der Deployment-Übersicht gel
 Oben rechts stehen dir zwei administrative Aktionen zur Verfügung:
 * **Pausieren / Fortsetzen:** Über den entsprechenden Button kannst du das gesamte Deployment vorübergehend pausieren und später wieder aktivieren.
 * **Löschen:** Entfernt das Deployment unwiderruflich. Hierbei werden alle zugehörigen OpenStack-Ressourcen vollständig gelöscht.
+
+> **Hinweis:** Das Ausführen von Aktionen auf dieser Seite (wie z. B. das Pausieren, Löschen oder der Neustart/Redeploy einzelner VMs) ist nur möglich, wenn die in deinem Admin-Konto hinterlegten OpenStack-Credentials die entsprechenden Berechtigungen aufweisen. Fehlen diese Rechte, werden die jeweiligen Befehle vom System abgelehnt.
 
 ---
 
