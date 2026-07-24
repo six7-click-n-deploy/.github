@@ -242,7 +242,7 @@ Nach erfolgreichem Login landest du direkt auf dem **Dashboard**. Hier erhältst
 **Erstanmeldung:** Wenn du dich zum ersten Mal anmeldest, fehlen dem System noch deine OpenStack-Zugangsdaten. Dies wird dir direkt oben auf dem Dashboard durch einen gelb hinterlegten Hinweis ("OpenStack-Credentials fehlen") signalisiert. Klicke dort auf den Button **Jetzt einrichten**, um deine Daten zu hinterlegen.
 
 <figure style="margin-bottom: 30px;">
-  <img src="img/Hinweis_auf_fehlende_OpenStack-Credentials.png" alt="Dashboard mit fehlenden Credentials" width="80%">
+  <img src="img/Fehlende_Credentials.png" alt="Dashboard mit fehlenden Credentials" width="80%">
   <figcaption style="font-size: 0.9em; color: #555;">Dashboard: Hinweis auf fehlende OpenStack-Credentials</figcaption>
 </figure>
 
@@ -306,39 +306,65 @@ Zusätzlich findest du hier unter dem Punkt "Einstellungen" jederzeit den Link z
 
 ### App-Details einsehen
 
-Wenn du in der App-Übersicht auf eine der angezeigten Kacheln klickst, öffnet sich die Detailseite der jeweiligen App. Diese Seite bietet dir einen umfassenden Einblick in die Anwendung und ihre Releases.
+Wenn du in der App-Übersicht auf eine der angezeigten Kacheln klickst, öffnet sich die Detailseite der jeweiligen App. Diese Seite bietet dir einen umfassenden Einblick in die Anwendung, ihre Releases sowie administrative Verwaltungsmöglichkeiten.
 
-**Allgemeine Übersicht (Kopfbereich):**
+> **Besitzer-Aktionen:** In der Detailansicht findest du oben rechts jederzeit die Buttons, um die ausgewählte App zu **bearbeiten** oder vollständig zu **löschen**.
+
+---
+
+### Tab: Übersicht
+
+Dieser Tab ist in verschiedene Bereiche unterteilt, die dir sowohl inhaltliche als auch technische Informationen liefern:
+
+#### 1. Kopfbereich (Allgemeine Übersicht)
 Direkt oben auf der Seite siehst du neben dem Namen und dem Logo der App auf einen Blick, **wie viele Versionen verfügbar** sind. Daneben findest du auch den direkten **Link zum dazugehörigen GitHub-Repository**.
 
-**Die App-Beschreibung (Vom Entwickler definiert):**
-Der große Hauptbereich der Seite beinhaltet die allgemeine Beschreibung der App. **Wichtig zu wissen:** Diese Inhalte werden vom jeweiligen App-Entwickler (Admin/Lehrer) beim Erstellen der App frei festgelegt. Je nach App kannst du hier unterschiedliche, spezifische Informationen finden, wie zum Beispiel:
+#### 2. App-Beschreibung (Vom Entwickler definiert)
+Der große Hauptbereich beinhaltet die Beschreibung der App. Diese Inhalte werden vom jeweiligen Entwickler beim Erstellen der App frei festgelegt. Hier findest du spezifische Informationen wie zum Beispiel:
 * Erklärungen zu Features, dem User-Management oder dem VM-Deployment
 * Schätzungen zur Deployment-Dauer
 * Erklärungen zu konfigurierbaren Variablen oder benötigten Aufgabendateien
 
-**Feste Metadaten und Versionsinfos:**
-Im unteren Bereich der Seite findest du fest definierte Blöcke mit Systeminformationen:
-* **App Informationen:** Zeigt an, wann und von wem die App initial erstellt wurde.
-* **Versionsdetails:** Liefert technische Daten zur aktuell ausgewählten Version (z. B. Typ, Commit-Hash, Autor, Veröffentlichungsdatum und Link zum Release).
-* **Versionsbeschreibung:** Beinhaltet spezifische Notizen oder Release Notes, die genau zu der ausgewählten Version gehören.
+#### 3. Feste Metadaten und Versionsinfos
+Im unteren Bereich der Seite befinden sich fest definierte Blöcke mit Systeminformationen:
+* **App Informationen:** Zeigt an, wann und von wem (Ersteller) die App initial angelegt wurde.
+* **Versionsdetails:** Liefert technische Daten zur aktuell ausgewählten Version:
+  * Name & Typ
+  * Commit-Hash & Autor
+  * Veröffentlichungsdatum (*Published at*)
+  * Pre-Release-Status
+  * Link zum Release
+* **Versionsbeschreibung:** Beinhaltet die spezifischen Notizen, Release Notes oder Beschreibungen, die auf GitHub für genau diese Version hinterlegt wurden.
 
-**Versionsauswahl und Deployment-Funktion:**
-Auf der rechten Seite deines Bildschirms befindet sich eine fixierte Box zur Versionssteuerung.
+#### 4. Versionsauswahl & Deployment
+Auf der rechten Seite befindet sich eine fixierte Box zur Versionssteuerung und zum Ausführen von Aktionen:
+* **Versionsauswahl:** Über das Dropdown-Menü *Version auswählen* kannst du durch alle verfügbaren Releases navigieren. Die Blöcke "Versionsdetails" und "Versionsbeschreibung" passen sich automatisch deiner Auswahl an.
+* **App deployen:** Anders als reguläre Nutzer (z. B. Studenten) hast du als Lehrender die Berechtigung, den Deployment-Prozess zu starten. Wähle dazu einfach die gewünschte Version aus und klicke auf den Button **Jetzt Deployen**.
 
-Über das Dropdown-Menü **Version auswählen** kannst du durch alle verfügbaren Releases der App navigieren. Sobald du eine andere Version auswählst, aktualisieren sich die Blöcke "Versionsdetails" und "Versionsbeschreibung" auf der linken Seite automatisch passend zu deiner Auswahl.
-
-
-**Jetzt Deployen:** Unter der Versionsauswahl befindet sich ein Button, um ein Deployment zu starten. Über diesen gelangst du in den Deploymentprozess.
-
-<figure style="margin-bottom: 30px;">
-  <img src="img/App_Details_1.png" alt="Detailseite einer App" width="80%">
-  <figcaption style="font-size: 0.9em; color: #555;">App-Details: Übersicht, Entwickler-Beschreibung und Versionsauswahl</figcaption>
+ <figure style="margin-bottom: 30px;">
+  <img src="img/app_Übersicht.png" alt="App hinzufügen" width="80%">
+  <figcaption style="font-size: 0.9em; color: #555;">App-Details - Tab: Übersicht</figcaption>
 </figure>
 
-<figure style="margin-bottom: 30px;">
-  <img src="img/App_Details_2.png" alt="Detailseite einer App" width="80%">
-  <figcaption style="font-size: 0.9em; color: #555;">App-Details: Übersicht, Entwickler-Beschreibung und Versionsauswahl</figcaption>
+ 
+
+### Tab: App Store (Sichtbarkeit & Freigabe)
+
+In diesem Tab verwaltest du die Sichtbarkeit der App im Store sowie deren Freigabe-Einstellungen:
+
+* **Von Privat auf Öffentlich schalten:**
+  Macht die App für alle Nutzer im Store sichtbar, sodass diese die App deployen können (sobald mindestens eine Version freigegeben wurde).
+  
+  > **Hinweis:** Bei privaten Apps *anderer Nutzer* kann nur der jeweilige Ersteller eine Version zur Freigabe einreichen.
+
+* **Von Öffentlich auf Privat schalten:**
+  Entzieht der Allgemeinheit den Zugriff auf die App.
+  * **Eigene App:** Ist nach der Umstellung nur noch für dich sichtbar.
+  * **App eines anderen Nutzers:** Ist nach der Umstellung nur noch für den Admin und den ursprünglichen Ersteller sichtbar. (Als Lehrender kannst du keine fremden Apps umschalten)
+
+  <figure style="margin-bottom: 30px;">
+  <img src="img/App_Appstore.png" alt="App hinzufügen" width="80%">
+  <figcaption style="font-size: 0.9em; color: #555;">App-Details - Tab: App Store</figcaption>
 </figure>
 
 ---
@@ -372,15 +398,13 @@ In der Kursverwaltung siehst du standardmäßig alle Kurse, die du selbst erstel
 
 **Kurse löschen:** Auf der Übersichtsseite deiner Kurse befindet sich in jeder Kachel deiner Kurse ein Mülleimer-Symbol. Klicke darauf, um diesen Kurs zu löschen und bestätige mit klick auf Löschen.
 
-> **Wichtiger Hinweis (Kurszuweisung):** Jeder Studierende kann immer nur in *einem* Kurs sein. Fügst du jemanden hinzu, der bereits in einem anderen Kurs eingetragen ist, wird die Person automatisch in den neuen Kurs verschoben und aus dem bisherigen entfernt.
+> **Hinweis (Kurszuweisung):** Jeder Studierende kann immer nur in *einem* Kurs sein. Fügst du jemanden hinzu, der bereits in einem anderen Kurs eingetragen ist, wird die Person automatisch in den neuen Kurs verschoben und aus dem bisherigen entfernt.
 
 
 <figure style="margin-bottom: 30px;">
   <img src="img/Kurse.png" alt="Auflistung der Kurse" width="80%">
   <figcaption style="font-size: 0.9em; color: #555;">Auflistung der Kurse</figcaption>
 </figure>
-
-
 
 
 ---
@@ -391,7 +415,7 @@ In der Kursverwaltung siehst du standardmäßig alle Kurse, die du selbst erstel
 
 ### Deployments erstellen
 
-> **Wichtiger Hinweis (Deployment erstellen):** Um ein Deployment zu erstellen, muss im Vorfeld bereits eine App angelegt und freigegeben worden sein.
+> **Hinweis (Deployment erstellen):** Um ein Deployment zu erstellen, muss im Vorfeld bereits eine App angelegt und freigegeben worden sein.
 
 1. Klicke in der Deployment-Übersicht oben rechts auf den Button **+ Neues Deployment**. 
 
@@ -429,20 +453,15 @@ In der Kursverwaltung siehst du standardmäßig alle Kurse, die du selbst erstel
 
 
 5. Im Schritt Variablen können nun spezifische Packer- oder Terraform-Variablen angepasst werden (abhängig von der jeweiligen App). Die Eingabefelder hängen dabei von der jeweiligen Variablen-Konfiguration ab.
-   * **Standardwerte (Defaults):** Die Variablen sind bereits mit Standardwerten des App-Erstellers vorausgefüllt. 
+   * **Standardwerte (Defaults):** Die Variablen sind bereits mit Standardwerten des App-Erstellers vorausgefüllt. Diese Defaults funktionieren nur dann fehlerfrei, wenn es Überschneidungen zwischen der Cloud-Umgebung des App-Erstellers und deinem eigenen OpenStack-Account gibt (z. B. wenn in beiden Systemen identische Bezeichnungen für Netzwerke oder Flavors existieren). Gibt es diese Überschneidungen nicht, müssen die Standardwerte zwingend an deine eigene Cloud-Umgebung angepasst werden.
    * **Value help:** Erfordert eine Variable eine spezifische Open-Stack Ressource (z.B. ein Netzwerk oder Flavor), nutzt das System die hinterlegten Credentials (z.B aus der clouds.yaml). Über diese Zugangsdaten werden die in OpenStack verfügbaren Ressourcen live abgerufen und als Dropdown-Menü bereitgestellt.
    * **Geltungsbereich (Scope) der Variablen:** Je nach App-Konfiguration werden Variablen in drei verschiedenen Scopes abgefragt.
      * **Alle:** Die Variable wird einmalig definiert und gilt für das gesamte Deployment.
      * **Team:** Die Variable muss für jede Gruppe separat definiert werden.
      * **User:** Die Variable muss für jeden User separat definiert werden.
    * **Info-Button:** Über das Info-Symbol (i) neben dem Variablennamen lässt sich ein Tooltip aufrufen. Dieser enthält die genaue Beschreibung der Variable und Formatierungshinweise.
-   * **Datei-Uploads:** Je nach App können Dateien hochgeladen werden. Diese können per Drag-and-Drop oder per Klick eingefügt werden. Auch hier kann der Upload für alle, pro Team oder pro User erfolgen. Hierbei sollte auf die Dateiendung geachtet werden.
+   * **Datei-Uploads:** Je nach App können Dateien hochgeladen werden. Diese können per Drag-and-Drop oder per Klick eingefügt werden. Auch hier kann der Upload für alle, pro Team oder pro User erfolgen. Hierbei sollte auf die Dateiendung geachtet werden. Eine einzelne Datei darf **maximal 2MB** groß sein und das Gesamtvolumen **maximal 10MB**.
 
-> **Wichtiger Hinweis (Standardwerte (Defaults)):**  Diese Defaults funktionieren nur dann fehlerfrei, wenn es Überschneidungen zwischen der Cloud-Umgebung des App-Erstellers und deinem eigenen OpenStack-Account gibt (z. B. wenn in beiden Systemen identische Bezeichnungen für Netzwerke oder Flavors existieren). Gibt es diese Überschneidungen nicht, müssen die Standardwerte zwingend an deine eigene Cloud-Umgebung angepasst werden.
-
-> **Wichtiger Hinweis (Upload Limit):** Eine einzelne Datei darf **maximal 2MB** groß sein und das Gesamtvolumen **maximal 10MB**.
-
-> **Wichtiger Hinweis (Web Anwendungen (z.B. pgadmin, Web-Latex)):** Wenn eine Applikation eine Web-Oberfläche bereitstellt, muss bei der Auswahl der Security Group (z.B. bei der Variable shared_secgroup_id) darauf geachtet werden, dass sie für HTTP-Zugriffe ausgelegt ist. Sie benötigt eine Eintritts-Regel für TCP auf Port 80 (HTTP) von 0.0.0.0/0. Fehlt diese Regel, sind die Web-Oberflächen nach dem Deployment nicht erreichbar.
 
 <figure style="margin-bottom: 30px;">
   <img src="img/Variablen_Konfiguration.png" alt="Variablen konfigurieren" width="80%">
@@ -453,6 +472,8 @@ In der Kursverwaltung siehst du standardmäßig alle Kurse, die du selbst erstel
   <img src="img/Dropdown_Dateiupload.png" alt="Dropdown und Dateiupload" width="80%">
   <figcaption style="font-size: 0.9em; color: #555;">Dropdown und Dateiupload</figcaption>
 </figure>
+
+> **Hinweis (Web Anwendungen (z.B. pgadmin, Web-Latex)):** Wenn eine Applikation eine Web-Oberfläche bereitstellt, muss bei der Auswahl der Security Group (z.B. bei der Variable shared_secgroup_id) darauf geachtet werden, dass sie für HTTP-Zugriffe ausgelegt ist. Sie benötigt eine Eintritts-Regel für TCP auf Port 80 (HTTP) von 0.0.0.0/0. Fehlt diese Regel, sind die Web-Oberflächen nach dem Deployment nicht erreichbar.
 
 6. Den Abschluss des Deployment-Prozesses bildet die Übersichts-Seite. Hier findest du eine Zusammenfassung deiner Auswahl: Basis-Konfigurationen, Team-Zuweisung und die Variablen-Konfiguration. Falls du noch etwas anpassen möchtest, kannst du unten links über den Button **Zurück** jederzeit einen Schritt im Prozess zurückgehen. Ist alles korrekt, klicke unten rechts auf **Deployen**, um den Vorgang abzuschließen.
 
@@ -505,7 +526,7 @@ In diesem Bereich verwaltest du die für das Deployment genutzten Virtuellen Mas
 Hier erhältst du transparente Einblicke in den technischen Ablauf und den aktuellen Status:
 
 * **Task-Übersicht:** Listet alle ausgeführten Tasks mit Status, Typ sowie Start- und Endzeitstempel auf.
-* **Echtzeit-Logs:** Verfolge laufende Deployments live mit. Die Logs enthalten Zeitstempel, Kategorien sowie die direkten Konsolenausgaben von Terraform und Packer. Über das Kopieren-Symbol kannst du den gesamten Log in deine Zwischenablage übernehmen.
+* **Logs:** Die Logs enthalten Zeitstempel, Kategorien sowie die direkten Konsolenausgaben von Terraform und Packer. Über das Kopieren-Symbol kannst du den gesamten Log in deine Zwischenablage übernehmen.
 * **Terraform-State:** In den Infrastruktur-Details findest du den rohen Terraform-State im JSON-Format (z. B. für technische Details und Output-Werte). Auch dieser lässt sich per Klick direkt in die Zwischenablage kopieren.
 
 
@@ -517,6 +538,20 @@ Hier erhältst du transparente Einblicke in den technischen Ablauf und den aktue
 <figure style="margin-bottom: 30px;">
   <img src="img/Depl_logs2.png" alt="Deployment Übersicht Terraform Logs" width="80%">
   <figcaption style="font-size: 0.9em; color: #555;">Deployments Übersicht Terraform Logs</figcaption>
+</figure>
+
+#### Echtzeit-Logs
+
+Während des eines Deployments kannst du in der Deployment Detailseite mit Echtzeit-Logs den Status überprüfen. Du kannst hier verfolgen in welchem Schritt das Deployment gerade ist und in den Logs diese nachvollziehen.
+
+<figure style="margin-bottom: 30px;">
+  <img src="img/live_logs.png" alt="Echtzeit-Logs" width="80%">
+  <figcaption style="font-size: 0.9em; color: #555;">Echtzeit-Logs</figcaption>
+</figure>
+
+<figure style="margin-bottom: 30px;">
+  <img src="img/live_logs2.png" alt="Echtzeit-Logs Details" width="80%">
+  <figcaption style="font-size: 0.9em; color: #555;">Echtzeit-Logs Details</figcaption>
 </figure>
 
 ---
