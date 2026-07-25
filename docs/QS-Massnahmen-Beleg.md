@@ -153,12 +153,29 @@ Die Staging-Deploy-Pipeline (`deployment/staging.yml`) prüft die Terraform-Konf
 
 Jedes Code-Repo nutzt eine identisch strukturierte, mehrstufige Pipeline. Jobs mit Abhängigkeiten (`needs:`) garantieren, dass kein Artefakt veröffentlicht wird, das nicht alle Qualitäts-Gates bestanden hat:
 
-```
-lint / typecheck ─┐
-test-unit ────────┤
-test-integration ─┼──> build ──> image-scan ──> push (GHCR) ──> trigger-staging
-security ─────────┘        │                         (nur main)      (nur main)
-coverage (Pages) ──────────┘
+```mermaid
+flowchart LR
+    subgraph checks["Qualitäts-Gates (parallel, je PR)"]
+        direction TB
+        lint["lint / typecheck"]
+        unit["test-unit"] --> integ["test-integration"]
+        sec["security"]
+    end
+
+    lint --> build["build"]
+    integ --> build
+    sec --> build
+    integ --> cov["coverage (Pages)"]
+
+    build --> scan["image-scan"]
+    scan -->|nur main| push["push (GHCR)"]
+    push -->|nur main| stag["trigger-staging"]
+
+    classDef gate fill:#eef4ff,stroke:#4a72b0,color:#1a2b45;
+    classDef deploy fill:#eefaf0,stroke:#3a9d5d,color:#14361f;
+    class lint,unit,integ,sec,build,scan gate;
+    class cov gate;
+    class push,stag deploy;
 ```
 
 - **Trigger:** jeder PR gegen `main` + jeder Push auf `main`
