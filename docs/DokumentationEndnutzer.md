@@ -383,6 +383,23 @@ Auf der rechten Seite befindet sich eine fixierte Box zur Versionssteuerung und 
   <figcaption style="font-size: 0.9em; color: #555;">App-Details - Tab: Übersicht</figcaption>
 </figure>
 
+
+Wenn du die App selbst hinzugefügt hast (du also der Besitzer bist), stehen dir auf der Detailseite zusätzliche Verwaltungsfunktionen zur Verfügung.
+
+**App-Informationen anpassen oder App löschen:**
+Oben rechts auf der Übersichtsseite findest du die Buttons **Bearbeiten** und **Löschen**.
+* Ein Klick auf "Bearbeiten" öffnet ein Pop-up-Fenster, in dem du den **Namen**, die **Beschreibung** sowie das **Logo** der App nachträglich aktualisieren kannst.
+* *Wichtig:* Das verknüpfte GitHub-Repository kann nach der initialen Erstellung nicht mehr geändert werden.
+
+<figure style="margin-bottom: 30px;">
+  <img src="img/Student_App_Detail_Besitzer1.png" alt="Übersichtsseite mit Bearbeiten-Button" width="80%">
+  <figcaption style="font-size: 0.9em; color: #555;">App-Übersicht für Besitzer: Die Schaltflächen zum Bearbeiten und Löschen befinden sich oben rechts.</figcaption>
+</figure>
+
+<figure style="margin-bottom: 30px;">
+  <img src="img/Student_App_Detail_Besitzer2.png" alt="Pop-up zum Bearbeiten der App" width="80%">
+  <figcaption style="font-size: 0.9em; color: #555;">App bearbeiten: In diesem Modal lassen sich Name, Beschreibung und Logo jederzeit anpassen.</figcaption>
+</figure>
  
 
 ### Tab: App Store (Sichtbarkeit & Freigabe)
