@@ -96,7 +96,7 @@ Um die Ressourcen der Plattform nutzen zu können, müssen deine Credentials gü
 
 Sobald die Daten gespeichert sind, prüft das System diese. Oben links erscheint ein grüner Status **"Credentials gültig"**. Du kannst die Verbindung jederzeit über den Button **Erneut testen** aktualisieren oder die Daten über **Löschen** komplett entfernen.
 
-> **Ausnahmefall:** Solltest du aus der Vergangenheit bereits Deployments besitzen, aber keine gültigen Credentials mehr hinterlegt haben, musst du zunächst alle aktuellen Deployments löschen, bevor du neue Credentials hinzufügen kannst.
+> **Hinweis:** Deine Credentials lassen sich ändern oder löschen, solange keine deiner *eigenen* aktiven Deployments existieren. Da Deployments für dich als Student stets von einer Lehrkraft oder einem Admin erstellt werden (du bist Mitglied, nicht Besitzer), betrifft dich diese Sperre im Normalfall nicht.
 
 <figure style="margin-bottom: 30px;">
   <img src="img/Credentials_hochladen.png" alt="OpenStack Credentials einrichten" width="80%">
@@ -408,7 +408,7 @@ In diesem Tab verwaltest du die Sichtbarkeit der App im Store sowie deren Freiga
 
 ### Kurse verwalten
 
-In der Kursverwaltung siehst du standardmäßig alle Kurse, die du selbst erstellt haben oder in denen du Mitglied bist.
+In der Kursverwaltung siehst du alle auf der Plattform angelegten Kurse. Bearbeiten oder löschen kannst du jedoch nur die Kurse, in denen du selbst als Lehrender hinterlegt bist.
 
 **Neue Kurse anlegen:** Gibt es noch keine Kurse, klicke einfach auf **Kurs erstellen** oder **Ersten Kurs anlegen**. Trage im sich öffnenden Fenster den gewünschten Namen ein und bestätige mit **Erstellen**.
 
@@ -799,7 +799,7 @@ In diesem Tab verwaltest du die Sichtbarkeit der App im Store sowie deren Freiga
 
 ### Kurse verwalten
 
-In der Kursverwaltung siehst du standardmäßig alle Kurse, die du selbst erstellt haben oder in denen du Mitglied bist.
+In der Kursverwaltung siehst du als Admin alle auf der Plattform angelegten Kurse und kannst jeden davon bearbeiten oder löschen.
 
 **Neue Kurse anlegen:** Gibt es noch keine Kurse, klicke einfach auf **Kurs erstellen** oder **Ersten Kurs anlegen**. Trage im sich öffnenden Fenster den gewünschten Namen ein und bestätige mit **Erstellen**.
 
