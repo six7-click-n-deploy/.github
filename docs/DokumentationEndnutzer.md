@@ -225,12 +225,12 @@ Du kannst jedoch über den Menüpunkt **Deployments** in der linken Seitenleiste
 * *Hinweis:* Aus Sicherheitsgründen kannst du in der Team-Liste nur deine eigenen Zugangsdaten einsehen, nicht die der anderen Teammitglieder.
 
 <figure style="margin-bottom: 30px;">
-  <img src="img/Deployment_Student_1.jpg" alt="Deployment Details Übersicht" width="80%">
+  <img src="img/Deployment_Student_1.png" alt="Deployment Details Übersicht" width="80%">
   <figcaption style="font-size: 0.9em; color: #555;">Deployment Details: Übersicht der App-Informationen und des Deployment-Status</figcaption>
 </figure>
 
 <figure style="margin-bottom: 30px;">
-  <img src="img/Deployment_Student_2.jpg" alt="Zugangsdaten direkt einsehen" width="80%">
+  <img src="img/Deployment_Student_2.png" alt="Zugangsdaten direkt einsehen" width="80%">
   <figcaption style="font-size: 0.9em; color: #555;">Teams & Mitglieder: Eigene Zugangsdaten direkt einsehen, kopieren und bei Bedarf erneut anfordern</figcaption>
 </figure>
 
