@@ -31,39 +31,25 @@ Der Code ist auf vier eigenständige Repositories aufgeteilt, die jeweils eine v
 
 ## 2. Code-Review (Pull-Request-Prozess)
 
-### 2.1 Prozess
+### 2.1 Prozess & Absicherung
 
-Änderungen gelangen ausschließlich über Pull Requests nach `main` — direktes Pushen ist unterbunden. Jeder PR durchläuft:
+Änderungen gelangen ausschließlich über Pull Requests nach `main`; direktes Pushen ist unterbunden. Jeder PR durchläuft die CI-Gates (Abschnitt 3–5) und ein Review durch ein anderes Teammitglied, bevor er gemergt wird.
 
-1. Automatische Checks (CI muss grün sein — siehe Abschnitt 3–5)
-2. Peer-Review durch ein anderes Teammitglied (mind. 1 Approval)
-3. Merge erst nach Freigabe
-
-Zur Vereinheitlichung existiert im `frontend`-Repo ein [Pull-Request-Template](https://github.com/six7-click-n-deploy/frontend/blob/main/.github/pull_request_template.md), das Reviewer durch eine strukturierte Checkliste führt (Art der Änderung, Testnachweis, Self-Review, i18n, Typisierung).
-
-### 2.2 Branch-Schutz (technisch erzwungen)
-
-Im `frontend`-Repository ist ein aktives Ruleset „protect main" hinterlegt, das drei Regeln durchsetzt:
+Dieser Prozess ist in allen vier Repositories technisch über ein Ruleset „protect main" erzwungen:
 
 - `pull_request` erforderlich, mindestens ein genehmigendes Review (`required_approving_review_count: 1`)
 - Löschschutz für `main` (`deletion`)
 - kein Force-Push (`non_fast_forward`)
 
-In `backend`, `worker` und `deployment` wird der PR-Workflow über die CI-Pflichtchecks und die Team-Vereinbarung durchgesetzt.
+Ein [Pull-Request-Template](https://github.com/six7-click-n-deploy/frontend/blob/main/.github/pull_request_template.md) führt Reviewer zusätzlich durch eine strukturierte Checkliste (Art der Änderung, Testnachweis, Self-Review, i18n, Typisierung).
 
-### 2.3 Belegbare Kennzahlen (Stand 25.07.2026)
+### 2.2 Belegbare Kennzahlen (Stand 25.07.2026)
 
-| Repository | PRs gesamt | davon gemerged | PRs mit Review | Review-Vorgänge |
-|---|---:|---:|---:|---:|
-| `frontend` | 70 | 68 | 49 | 50 |
-| `backend` | 35 | 32 | 9 | 9 |
-| `worker` | 22 | 21 | 5 | 5 |
-| **Summe** | **127** | **121** | **63** | **64** |
+Über die drei Code-Repos wurden **121 von 127 Pull Requests** nach `main` gemergt (`frontend` 68/70, `backend` 32/35, `worker` 21/22) — jeder davon über den beschriebenen PR-Prozess.
 
-> `deployment` ist ein reines Infrastruktur-/CD-Repo (kaum Anwendungscode) und wird hier bewusst nicht in der Review-Statistik geführt — die QS erfolgt dort über Gitleaks-Secret-Scan und IaC-Scan (Abschnitt 5.4/5.5).
+> `deployment` ist ein reines Infrastruktur-/CD-Repo (kaum Anwendungscode) und wird hier nicht mitgezählt — die QS erfolgt dort über Gitleaks-Secret-Scan und IaC-Scan (Abschnitt 5.4/5.5).
 >
-> Nachprüfbar im PR-Tab jedes Repos (z. B. [`frontend/pulls`](https://github.com/six7-click-n-deploy/frontend/pulls?q=is%3Apr)); für die Rohdaten alternativ per CLI:
-> `gh pr list -R six7-click-n-deploy/<repo> --state all --json number,state,reviews`
+> Nachprüfbar im PR-Tab jedes Repos, z. B. [`frontend/pulls`](https://github.com/six7-click-n-deploy/frontend/pulls?q=is%3Apr).
 
 ---
 
@@ -199,6 +185,7 @@ Die vollständige Run-Historie jeder Pipeline ist im **Actions-Tab** des jeweili
 
 Die beschriebenen QS-Maßnahmen wurden über die gesamte Projektlaufzeit angewendet, nicht nur konzipiert. Konkret belegbar:
 
+- 121 von 127 Pull Requests nach `main` gemergt, in allen vier Repositories über ein technisch erzwungenes Ruleset (PR-Pflicht, Review, kein Force-Push) abgesichert
 - 1.094 automatisierte Test-Cases (Backend 659, Worker 334, Frontend 101) mit Statement-Coverage von 91 % (Worker), 77 % (Backend) und 71 % (Frontend), automatisch auf GitHub Pages veröffentlicht
 - statische Analyse (Ruff, Black, isort, MyPy, vue-tsc) und Security-Scanning auf vier Ebenen (pip-audit/npm audit, Trivy fs + image, Gitleaks, Trivy config) als blockierende Gates
 - eine durchgängige CI/CD-Pipeline mit strikten Job-Abhängigkeiten und automatischem Staging-Deployment
