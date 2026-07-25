@@ -220,12 +220,18 @@ Neben dem Reiter "Übersicht" gibt es für deine eigenen Apps den zusätzlichen 
 Du kannst jedoch über den Menüpunkt **Deployments** in der linken Seitenleiste (oder den Fastlink auf dem Dashboard) alle Deployments einsehen, denen du (bzw. dein Team) zugewiesen wurdest.
 
 * **Übersicht:** Hier siehst du eine Liste der aktiven Deployments inklusive Status (z. B. "Erfolgreich").
-* **Details & Zugangsdaten:** Klicke auf ein Deployment, um die Details zu öffnen. Du siehst Informationen zur genutzten App, dem Besitzer (Lehrkraft/Admin) und der Team-Zuteilung.
-* **Zugang erneut senden:** In der Sektion "Teams & Mitglieder" findest du neben deinem Namen den Button **Zugang erneut senden**. Solltest du deine Logindaten für diese spezifische App (z. B. Benutzername und Passwort für eine Datenbank-Instanz) vergessen oder nicht erhalten haben, kannst du sie dir hierüber erneut zuschicken lassen.
+* **Details:** Klicke auf ein Deployment, um die Details zu öffnen. Du siehst allgemeine Informationen zur genutzten App, dem Besitzer (Lehrkraft/Admin) und der Team-Zuteilung.
+* **Zugangsdaten direkt einsehen & erneut senden:** In der Sektion "Teams & Mitglieder" findest du neben deinem Namen deine persönlichen Zugangsdaten für diese spezifische App (z. B. Benutzername, URL und Passwort). Du kannst diese Daten hier direkt einsehen und über die kleinen Symbole bequem in die Zwischenablage kopieren. Das Passwort ist zunächst verborgen und lässt sich über das Augen-Symbol sichtbar machen. Zusätzlich gibt es den Button **Zugang erneut senden**, falls du dir diese Logindaten noch einmal per E-Mail zuschicken lassen möchtest.
+* *Hinweis:* Aus Sicherheitsgründen kannst du in der Team-Liste nur deine eigenen Zugangsdaten einsehen, nicht die der anderen Teammitglieder.
 
 <figure style="margin-bottom: 30px;">
-  <img src="img/Deployments_Details_einsehen.png" alt="Deployment Details" width="80%">
-  <figcaption style="font-size: 0.9em; color: #555;">Deployments: Details einsehen und Logindaten erneut anfordern</figcaption>
+  <img src="img/Deployment_Student_1.jpg" alt="Deployment Details Übersicht" width="80%">
+  <figcaption style="font-size: 0.9em; color: #555;">Deployment Details: Übersicht der App-Informationen und des Deployment-Status</figcaption>
+</figure>
+
+<figure style="margin-bottom: 30px;">
+  <img src="img/Deployment_Student_2.jpg" alt="Zugangsdaten direkt einsehen" width="80%">
+  <figcaption style="font-size: 0.9em; color: #555;">Teams & Mitglieder: Eigene Zugangsdaten direkt einsehen, kopieren und bei Bedarf erneut anfordern</figcaption>
 </figure>
 
 ---
