@@ -149,39 +149,38 @@ Die Staging-Deploy-Pipeline (`deployment/staging.yml`) prüft die Terraform-Konf
 
 ---
 
-## 6. CI/CD-Pipeline (Gesamtablauf)
+## 6. QS-Pipeline (Gesamtablauf)
 
-Jedes Code-Repo nutzt eine identisch strukturierte, mehrstufige Pipeline. Jobs mit Abhängigkeiten (`needs:`) garantieren, dass kein Artefakt veröffentlicht wird, das nicht alle Qualitäts-Gates bestanden hat:
+Jede Änderung durchläuft dieselbe Kette von Qualitätssicherungs-Stationen, bevor sie nach `main` gelangt und deployt wird. Peer-Review und automatische Gates greifen parallel; erst wenn beide bestanden sind, ist ein Merge möglich (technisch über das Ruleset erzwungen, Abschnitt 2):
 
 ```mermaid
 flowchart LR
-    subgraph checks["Qualitäts-Gates (parallel, je PR)"]
+    subgraph checks["Qualitätssicherung (je PR)"]
         direction TB
+        review["Peer-Review (1 Approval)"]
         lint["lint / typecheck"]
         unit["test-unit"] --> integ["test-integration"]
         sec["security"]
     end
 
-    lint --> build["build"]
-    integ --> build
-    sec --> build
     integ --> cov["coverage (Pages)"]
 
-    build --> scan["image-scan"]
-    scan -->|nur main| push["push (GHCR)"]
-    push -->|nur main| stag["trigger-staging"]
+    checks --> scan["image-scan"]
+    scan --> push["push (GHCR)"]
+    push --> stag["trigger-staging"]
 
+    classDef human fill:#fff4e6,stroke:#c47f1a,color:#4a2f08;
     classDef gate fill:#eef4ff,stroke:#4a72b0,color:#1a2b45;
     classDef deploy fill:#eefaf0,stroke:#3a9d5d,color:#14361f;
-    class lint,unit,integ,sec,build,scan gate;
-    class cov gate;
-    class push,stag deploy;
+    class review human;
+    class lint,unit,integ,sec,cov gate;
+    class scan,push,stag deploy;
 ```
 
-- **Trigger:** jeder PR gegen `main` + jeder Push auf `main`
-- **Gate-Prinzip:** `build` benötigt `lint`, `test-integration` und `security` → alle müssen grün sein
-- **Deploy nur von `main`:** `push` und `trigger-staging` laufen ausschließlich bei `push`-Events auf `main`
-- **Continuous Deployment:** Ein erfolgreicher Push auf `main` triggert automatisch das Staging-Deployment im `deployment`-Repo
+- **Zwei-Augen-Prinzip:** Jeder PR braucht mindestens ein Approval eines anderen Teammitglieds — technisch erzwungen (Abschnitt 2)
+- **Automatische Gates:** Linting/Typen, Unit- + Integrationstests und Security-Scan müssen grün sein
+- **Merge-Gate:** Erst wenn Review **und** alle Gates bestanden sind, ist ein Merge nach `main` möglich
+- **Continuous Deployment:** Nach dem Merge durchläuft die Änderung `image-scan → push (GHCR)` und triggert automatisch das Staging-Deployment
 
 ### 6.1 Pipeline-Läufe
 
