@@ -5,8 +5,6 @@
 > **Stand:** 25.07.2026
 > **Zweck:** Nachweis der durchgeführten Qualitätssicherungs­maßnahmen im Studienprojekt.
 
-Dieses Dokument belegt die im Projekt durchgeführten QS-Maßnahmen. Alle Angaben sind reproduzierbar über die GitHub-Organisation, die CI/CD-Pipelines und die Pull-Request-Historie.
-
 ---
 
 ## 1. Überblick der QS-Maßnahmen
@@ -35,21 +33,21 @@ Der Code ist auf vier eigenständige Repositories aufgeteilt, die jeweils eine v
 
 ### 2.1 Prozess
 
-Änderungen gelangen **ausschließlich über Pull Requests** nach `main` — direktes Pushen ist unterbunden. Jeder PR durchläuft:
+Änderungen gelangen ausschließlich über Pull Requests nach `main` — direktes Pushen ist unterbunden. Jeder PR durchläuft:
 
-1. **Automatische Checks** (CI muss grün sein — siehe Abschnitt 3–5)
-2. **Peer-Review** durch ein anderes Teammitglied (mind. 1 Approval)
-3. **Merge** erst nach Freigabe
+1. Automatische Checks (CI muss grün sein — siehe Abschnitt 3–5)
+2. Peer-Review durch ein anderes Teammitglied (mind. 1 Approval)
+3. Merge erst nach Freigabe
 
 Zur Vereinheitlichung existiert im `frontend`-Repo ein [Pull-Request-Template](https://github.com/six7-click-n-deploy/frontend/blob/main/.github/pull_request_template.md), das Reviewer durch eine strukturierte Checkliste führt (Art der Änderung, Testnachweis, Self-Review, i18n, Typisierung).
 
 ### 2.2 Branch-Schutz (technisch erzwungen)
 
-Im `frontend`-Repository ist ein aktives **Ruleset „protect main"** hinterlegt:
+Im `frontend`-Repository ist ein aktives Ruleset „protect main" hinterlegt, das drei Regeln durchsetzt:
 
-- ✅ `pull_request` erforderlich, **mind. 1 genehmigendes Review** (`required_approving_review_count: 1`)
-- ✅ **Löschschutz** für `main` (`deletion`)
-- ✅ **Kein Force-Push** (`non_fast_forward`)
+- `pull_request` erforderlich, mindestens ein genehmigendes Review (`required_approving_review_count: 1`)
+- Löschschutz für `main` (`deletion`)
+- kein Force-Push (`non_fast_forward`)
 
 In `backend`, `worker` und `deployment` wird der PR-Workflow über die CI-Pflichtchecks und die Team-Vereinbarung durchgesetzt.
 
@@ -60,39 +58,46 @@ In `backend`, `worker` und `deployment` wird der PR-Workflow über die CI-Pflich
 | `frontend` | 70 | 68 | 49 | 50 |
 | `backend` | 35 | 32 | 9 | 9 |
 | `worker` | 22 | 21 | 5 | 5 |
-| `deployment` | 5 | 5 | 2 | 2 |
-| **Summe** | **132** | **126** | **65** | **66** |
+| **Summe** | **127** | **121** | **63** | **64** |
 
-> Reproduzierbar über:
+> `deployment` ist ein reines Infrastruktur-/CD-Repo (kaum Anwendungscode) und wird hier bewusst nicht in der Review-Statistik geführt — die QS erfolgt dort über Gitleaks-Secret-Scan und IaC-Scan (Abschnitt 5.4/5.5).
+>
+> Nachprüfbar im PR-Tab jedes Repos (z. B. [`frontend/pulls`](https://github.com/six7-click-n-deploy/frontend/pulls?q=is%3Apr)); für die Rohdaten alternativ per CLI:
 > `gh pr list -R six7-click-n-deploy/<repo> --state all --json number,state,reviews`
 
 ---
 
 ## 3. Automatisierte Tests
 
-Jedes Code-Repository führt bei **jedem PR und jedem Push auf `main`** eine Testsuite aus. Ein PR ist erst mergefähig, wenn die Tests bestehen.
+Jedes Code-Repository führt bei jedem PR und jedem Push auf `main` eine Testsuite aus. Ein PR ist erst mergefähig, wenn die Tests bestehen.
 
 ### 3.1 Backend (`backend`) — FastAPI / pytest
 
-- **`test-unit`**: Unit-Tests (`pytest -m unit`) gegen einen PostgreSQL-16-Service-Container
-- **`test-integration`**: End-to-End-Tests der FastAPI-App via `TestClient` (`pytest -m integration`)
-- **`coverage`**: Kombiniert Unit- + Integrations-Coverage, rendert HTML-Report, erzeugt ein Shields.io-Coverage-Badge und veröffentlicht den Report auf GitHub Pages
-- **Testumfang:** 45 Testdateien
+- `test-unit`: Unit-Tests (`pytest -m unit`) gegen einen PostgreSQL-16-Service-Container
+- `test-integration`: End-to-End-Tests der FastAPI-App via `TestClient` (`pytest -m integration`)
+- `coverage`: Kombiniert Unit- + Integrations-Coverage, rendert HTML-Report, erzeugt ein Shields.io-Coverage-Badge und veröffentlicht den Report auf GitHub Pages
+- Testumfang: 659 Test-Cases, 77 % Statement-Coverage
 
 ### 3.2 Worker (`worker`) — Celery / pytest
 
-- **`test-unit`** + **`test-integration`** (getrennte Marker), ebenfalls mit Coverage-Aggregation und Pages-Publishing
-- **Testumfang:** 13 Testdateien
+- `test-unit` + `test-integration` (getrennte Marker), ebenfalls mit Coverage-Aggregation und Pages-Publishing
+- Testumfang: 334 Test-Cases, 91 % Statement-Coverage
 
 ### 3.3 Frontend (`frontend`) — Vitest
 
-- **`test`**: `npm run test:coverage` (Vitest) inkl. Coverage-Badge-Erzeugung
-- **`typecheck`**: `vue-tsc --noEmit` als eigener Blocking-Job
-- **Testumfang:** 13 Spec-Dateien
+- `test`: `npm run test:coverage` (Vitest) inkl. Coverage-Badge-Erzeugung
+- `typecheck`: `vue-tsc --noEmit` als eigener Blocking-Job
+- Testumfang: 101 Test-Cases, 71 % Statement-Coverage
 
 ### 3.4 Coverage-Transparenz
 
-Alle drei Code-Repos publizieren ihren Coverage-Report automatisch auf **GitHub Pages** und erzeugen ein farbcodiertes **Coverage-Badge** (grün ≥ 80 %, absteigend bis rot). Die Coverage-Daten werden zusätzlich als Workflow-Artefakt (14 Tage) abgelegt.
+Alle drei Code-Repos publizieren ihren Coverage-Report automatisch auf GitHub Pages und erzeugen ein Coverage-Badge. Die aktuellen Reports sind direkt einsehbar:
+
+| Repository | Coverage-Report |
+|---|---|
+| `frontend` | [six7-click-n-deploy.github.io/frontend](https://six7-click-n-deploy.github.io/frontend/) |
+| `backend` | [six7-click-n-deploy.github.io/backend](https://six7-click-n-deploy.github.io/backend/) |
+| `worker` | [six7-click-n-deploy.github.io/worker](https://six7-click-n-deploy.github.io/worker/) |
 
 ---
 
@@ -102,43 +107,49 @@ Vorgeschaltete Qualitäts-Gates fangen Stil- und Typfehler ab, bevor Tests laufe
 
 | Repository | Werkzeug(e) | Prüfung |
 |---|---|---|
-| `backend` | **Ruff** | Linting (`ruff check .`) |
-| `worker` | **Ruff, Black, isort, MyPy** | Linting, Formatierung, Import-Ordnung, statische Typen |
-| `frontend` | **vue-tsc** | TypeScript-Typprüfung (`--noEmit`) |
+| `backend` | Ruff | Linting (`ruff check .`) |
+| `worker` | Ruff, Black, isort, MyPy | Linting, Formatierung, Import-Ordnung, statische Typen |
+| `frontend` | vue-tsc | TypeScript-Typprüfung (`--noEmit`) |
 
-Diese Jobs sind **blockierend** — schlägt das Linting fehl, kann der Build-Job nicht starten.
+Diese Jobs sind blockierend — schlägt das Linting fehl, kann der Build-Job nicht starten.
 
 ---
 
 ## 5. Security-Maßnahmen
 
-Security ist als fester Pipeline-Bestandteil integriert und **blockiert Merges bei HIGH-/CRITICAL-Findings**.
+Security ist als fester Pipeline-Bestandteil integriert und blockiert Merges bei HIGH-/CRITICAL-Findings.
 
 ### 5.1 Dependency-Scanning
 
 | Repository | Werkzeug | Verhalten |
 |---|---|---|
-| `backend` / `worker` | **pip-audit** (`--strict`) | Prüft Produktions­abhängigkeiten, bricht bei Vulnerabilities ab |
-| `frontend` | **npm audit** (`--audit-level=high --omit=dev`) | Prüft Produktions­abhängigkeiten |
+| `backend` / `worker` | pip-audit (`--strict`) | Prüft Produktions­abhängigkeiten, bricht bei Vulnerabilities ab |
+| `frontend` | npm audit (`--audit-level=high --omit=dev`) | Prüft Produktions­abhängigkeiten |
 
 Dokumentierte, begründete Ausnahmen werden nachvollziehbar hinterlegt — z. B. wird im Backend `PYSEC-2026-1325` (ecdsa Minerva-Timing-Seitenkanal) mit ausführlicher Begründung ignoriert, da der betroffene Code-Pfad (Signieren) nicht genutzt wird (nur Token-Verifikation).
 
 ### 5.2 Filesystem- & Misconfig-Scan (Trivy)
 
-Der **`security`-Job** führt in jedem Repo einen `trivy fs`-Scan aus (`vuln,secret,misconfig`):
+Der `security`-Job führt in jedem Repo einen `trivy fs`-Scan aus (`vuln,secret,misconfig`):
 
-- **Blocking Gate:** Job schlägt bei HIGH/CRITICAL fehl (`exit-code: 1`)
-- **SARIF-Upload:** Alle Findings (auch ignorierte) landen im **GitHub Security Tab** — dauerhaft sichtbar
+- Blocking Gate: Job schlägt bei HIGH/CRITICAL fehl (`exit-code: 1`)
+- SARIF-Upload: Alle Findings (auch ignorierte) landen im GitHub Security Tab
 
 ### 5.3 Container-Image-Scan (Trivy)
 
-Der **`image-scan`-Job** baut das produktive Docker-Image und scannt es mit Trivy auf CVEs (HIGH/CRITICAL, blockierend + SARIF-Upload). Erst danach darf das Image via **`push`-Job** in die GitHub Container Registry (GHCR) gelangen.
+Der `image-scan`-Job baut das produktive Docker-Image und scannt es mit Trivy auf CVEs (HIGH/CRITICAL, blockierend + SARIF-Upload). Erst danach darf das Image via `push`-Job in die GitHub Container Registry (GHCR) gelangen. Die veröffentlichten Images sind öffentlich einsehbar:
+
+| Repository | Container-Image |
+|---|---|
+| `frontend` | [ghcr.io/six7-click-n-deploy/frontend](https://github.com/six7-click-n-deploy/frontend/pkgs/container/frontend) |
+| `backend` | [ghcr.io/six7-click-n-deploy/backend](https://github.com/six7-click-n-deploy/backend/pkgs/container/backend) |
+| `worker` | [ghcr.io/six7-click-n-deploy/worker](https://github.com/six7-click-n-deploy/worker/pkgs/container/worker) |
 
 ### 5.4 Secret-Scanning (Gitleaks)
 
-Das `deployment`-Repo betreibt einen dedizierten [**Secret-Scan-Workflow**](https://github.com/six7-click-n-deploy/deployment/blob/main/.github/workflows/secret-scan.yml) mit **Gitleaks** als Pre-Merge-Gate:
+Das `deployment`-Repo betreibt einen dedizierten [Secret-Scan-Workflow](https://github.com/six7-click-n-deploy/deployment/blob/main/.github/workflows/secret-scan.yml) mit Gitleaks als Pre-Merge-Gate:
 
-- Scannt die **vollständige Git-Historie** (`fetch-depth: 0`) auf versehentlich committete Tokens, SSH-Keys und OpenStack-Credentials
+- Scannt die vollständige Git-Historie (`fetch-depth: 0`) auf versehentlich committete Tokens, SSH-Keys und OpenStack-Credentials
 - Zwei-Pass-Muster: blockierendes Gate + SARIF-Emit in den Security Tab
 
 ### 5.5 Infrastructure-as-Code-Scan
@@ -147,14 +158,14 @@ Die Staging-Deploy-Pipeline (`deployment/staging.yml`) prüft die Terraform-Konf
 
 - `terraform fmt -check` (Formatierung)
 - `terraform validate` (Syntax/Konsistenz)
-- **`trivy config`** auf IaC-Misconfigurations (HIGH/CRITICAL, SARIF in Security Tab)
-- Sensible Artefakte (SSH-Keys, Inventory) werden nach dem Lauf **garantiert gelöscht** (`if: always()`)
+- `trivy config` auf IaC-Misconfigurations (HIGH/CRITICAL, SARIF in Security Tab)
+- Sensible Artefakte (SSH-Keys, Inventory) werden nach dem Lauf garantiert gelöscht (`if: always()`)
 
 ---
 
 ## 6. CI/CD-Pipeline (Gesamtablauf)
 
-Jedes Code-Repo nutzt eine identisch strukturierte, mehrstufige Pipeline. Jobs mit Abhängigkeiten (`needs:`) garantieren, dass **kein Artefakt veröffentlicht wird, das nicht alle Qualitäts-Gates bestanden hat**:
+Jedes Code-Repo nutzt eine identisch strukturierte, mehrstufige Pipeline. Jobs mit Abhängigkeiten (`needs:`) garantieren, dass kein Artefakt veröffentlicht wird, das nicht alle Qualitäts-Gates bestanden hat:
 
 ```
 lint / typecheck ─┐
@@ -164,33 +175,32 @@ security ─────────┘        │                         (nur 
 coverage (Pages) ──────────┘
 ```
 
-- **Trigger:** jeder PR gegen `main` + jeder Push auf `main` + Version-Tags (`v*.*.*`)
-- **Gate-Prinzip:** `build` benötigt `lint`, `test-integration` **und** `security` → alle müssen grün sein
+- **Trigger:** jeder PR gegen `main` + jeder Push auf `main`
+- **Gate-Prinzip:** `build` benötigt `lint`, `test-integration` und `security` → alle müssen grün sein
 - **Deploy nur von `main`:** `push` und `trigger-staging` laufen ausschließlich bei `push`-Events auf `main`
 - **Continuous Deployment:** Ein erfolgreicher Push auf `main` triggert automatisch das Staging-Deployment im `deployment`-Repo
 
-### 6.1 Pipeline-Läufe (letzte 100 Runs je Repo, Stand 25.07.2026)
+### 6.1 Pipeline-Läufe
 
-| Repository | Erfolgreich | Fehlgeschlagen |
-|---|---:|---:|
-| `frontend` | 72 | 26 |
-| `backend` | 61 | 39 |
-| `worker` | 34 | 44 |
-| `deployment` | 86 | 14 |
+Die vollständige Run-Historie jeder Pipeline ist im **Actions-Tab** des jeweiligen Repos einsehbar und reproduzierbar:
 
-> Fehlgeschlagene Läufe belegen, dass die Gates **tatsächlich greifen** — fehlerhafte Änderungen wurden von der Pipeline abgefangen, bevor sie gemerged/deployed werden konnten.
+| Repository | Workflow-Historie |
+|---|---|
+| `frontend` | [Actions](https://github.com/six7-click-n-deploy/frontend/actions/workflows/ci.yml) |
+| `backend` | [Actions](https://github.com/six7-click-n-deploy/backend/actions/workflows/ci.yml) |
+| `worker` | [Actions](https://github.com/six7-click-n-deploy/worker/actions/workflows/ci.yml) |
+| `deployment` | [Actions](https://github.com/six7-click-n-deploy/deployment/actions) |
+
+> Die Historie enthält auch fehlgeschlagene Läufe — die Gates greifen also und fangen fehlerhafte Änderungen vor dem Merge nach `main` ab.
 
 ---
 
 ## 7. Zusammenfassung — Nachweis der Durchführung
 
-Die QS-Maßnahmen sind **nicht nur konzeptioniert, sondern nachweislich im Projektalltag gelebt worden**:
+Die beschriebenen QS-Maßnahmen wurden über die gesamte Projektlaufzeit angewendet, nicht nur konzipiert. Konkret belegbar:
 
-- ✅ **126 gemergte Pull Requests** über vier Repositories, davon 65 mit dokumentiertem Peer-Review
-- ✅ **Technisch erzwungener Branch-Schutz** (Ruleset mit Review-Pflicht) auf `main`
-- ✅ **71 Testdateien** (Unit + Integration) mit automatisiertem Coverage-Reporting auf GitHub Pages
-- ✅ **Statische Analyse** (Ruff, Black, isort, MyPy, vue-tsc) als blockierende Gates
-- ✅ **Vierfaches Security-Scanning**: Dependencies (pip-audit/npm audit), Filesystem + Images (Trivy), Secrets (Gitleaks), IaC (Trivy config) — mit zentraler Sichtbarkeit im GitHub Security Tab
-- ✅ **Durchgängige CI/CD-Pipeline** mit strikten Job-Abhängigkeiten und automatischem Staging-Deployment
+- 1.094 automatisierte Test-Cases (Backend 659, Worker 334, Frontend 101) mit Statement-Coverage von 91 % (Worker), 77 % (Backend) und 71 % (Frontend), automatisch auf GitHub Pages veröffentlicht
+- statische Analyse (Ruff, Black, isort, MyPy, vue-tsc) und Security-Scanning auf vier Ebenen (pip-audit/npm audit, Trivy fs + image, Gitleaks, Trivy config) als blockierende Gates
+- eine durchgängige CI/CD-Pipeline mit strikten Job-Abhängigkeiten und automatischem Staging-Deployment
 
-Alle Belege sind über die GitHub-Organisation, die Workflow-Dateien (`.github/workflows/`) und die `gh`-CLI reproduzierbar.
+Alle Belege sind über die GitHub-Organisation, die Workflow-Dateien (`.github/workflows/`) und die PR-/Actions-Tabs der Repos nachprüfbar.
