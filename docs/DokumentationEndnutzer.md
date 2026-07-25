@@ -25,10 +25,10 @@ Damit der Login erfolgreich durchgeführt werden kann, müssen in Keycloak folge
 * E-Mail-Adresse
 * Zugewiesene Rolle (Student, Lehrer oder Admin)
 
-Fehlt eine dieser Informationen, wird die Anmeldung vom System blockiert.
+Fehlt eine dieser Informationen, gibt es einen Fehler.
 
 **Hinweis zur Struktur dieser Dokumentation**
-Diese Endnutzer-Dokumentation ist strikt nach Rollen getrennt aufgebaut. Jede Sektion (Student, Lehrer, Admin) ist als eigenständige und vollumfängliche Anleitung konzipiert.
+Die nun folgende Endnutzer-Dokumentation ist strikt nach Rollen getrennt aufgebaut. Jede Sektion (Student, Lehrer, Admin) ist als eigenständige und vollumfängliche Anleitung konzipiert.
 
 Aufgrund dieses Aufbaus kann es zu inhaltlichen Dopplungen zwischen den einzelnen Kapiteln kommen. Dies ist bewusst so gewählt: Jede Nutzergruppe erhält genau die Informationen, die für sie relevant sind, ohne bei funktionsübergreifenden Themen zwischen verschiedenen Teilen des Dokuments hin- und herspringen zu müssen.
 
@@ -48,7 +48,7 @@ Die folgende Tabelle gibt einen schnellen Überblick über die Berechtigungen de
 | Sichtbarkeit einer App auf "Privat" stellen | ✅ (Nur eigene) | ✅ (Nur eigene) | ✅ (Alle) |
 | App-Versionen freigeben, ablehnen oder widerrufen | ❌ | ❌ | ✅ |
 | Neue Deployments konfigurieren und starten | ❌ | ✅ | ✅ |
-| Deployments einsehen | ❌ | ✅ (Nur eigene) | ✅ (Alle) |
+| Deployments einsehen | ✅ (Nur als Mitglied) | ✅ (Eigene + Kurs-Studenten) | ✅ (Alle) |
 | Eigene Logindaten in zugewiesenen Deployments einsehen | ✅ | ✅ | ✅ |
 | Logindaten aller Mitglieder eines Deployments einsehen | ❌ | ✅ (als Besitzer) | ✅ |
 | Kurse erstellen und Mitglieder verwalten | ❌ | ✅ | ✅ |
