@@ -379,7 +379,7 @@ Auf der rechten Seite befindet sich eine fixierte Box zur Versionssteuerung und 
 * **App deployen:** Anders als reguläre Nutzer (z. B. Studenten) hast du als Lehrender die Berechtigung, den Deployment-Prozess zu starten. Wähle dazu einfach die gewünschte Version aus und klicke auf den Button **Jetzt Deployen**.
 
  <figure style="margin-bottom: 30px;">
-  <img src="img/app_Übersicht.png" alt="App hinzufügen" width="80%">
+  <img src="img/app_übersicht.png" alt="App hinzufügen" width="80%">
   <figcaption style="font-size: 0.9em; color: #555;">App-Details - Tab: Übersicht</figcaption>
 </figure>
 
