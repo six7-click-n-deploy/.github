@@ -506,6 +506,11 @@ In der Kursverwaltung siehst du standardmäßig alle Kurse, die du selbst erstel
 
 > **Hinweis (Web Anwendungen (z.B. pgadmin, Web-Latex)):** Wenn eine Applikation eine Web-Oberfläche bereitstellt, muss bei der Auswahl der Security Group (z.B. bei der Variable shared_secgroup_id) darauf geachtet werden, dass sie für HTTP-Zugriffe ausgelegt ist. Sie benötigt eine Eintritts-Regel für TCP auf Port 80 (HTTP) von 0.0.0.0/0. Fehlt diese Regel, sind die Web-Oberflächen nach dem Deployment nicht erreichbar.
 
+<figure style="margin-bottom: 30px;">
+  <img src="img/Regelkonfiguration.png" alt="Dropdown und Dateiupload" width="80%">
+  <figcaption style="font-size: 0.9em; color: #555;">Dropdown und Dateiupload</figcaption>
+</figure>
+
 6. Den Abschluss des Deployment-Prozesses bildet die Übersichts-Seite. Hier findest du eine Zusammenfassung deiner Auswahl: Basis-Konfigurationen, Team-Zuweisung und die Variablen-Konfiguration. Falls du noch etwas anpassen möchtest, kannst du unten links über den Button **Zurück** jederzeit einen Schritt im Prozess zurückgehen. Ist alles korrekt, klicke unten rechts auf **Deployen**, um den Vorgang abzuschließen.
 
 
@@ -536,7 +541,7 @@ Die Detailansicht bietet dir grundlegende Informationen zum gewählten Deploymen
 * **Teams & Mitglieder:** Listet alle beteiligten Teams sowie die zugewiesenen Studierenden auf. Hier kannst du Studierenden die Zugangsdaten hier bei Bedarf erneut zusenden (**Zugang erneut senden**), sowie ihre Zugangsdaten einsehen und separat kopieren.
 
 <figure style="margin-bottom: 30px;">
-  <img src="img/Depl_detail.png" alt="Deployment Übersicht" width="80%">
+  <img src="img/Depl_detail3.png" alt="Deployment Übersicht" width="80%">
   <figcaption style="font-size: 0.9em; color: #555;">Deployments Übersicht</figcaption>
 </figure>
 
@@ -896,7 +901,6 @@ Die Deployments werden als Kacheln angezeigt.
   <figcaption style="font-size: 0.9em; color: #555;">Dropdown und Dateiupload</figcaption>
 </figure>
 
-> **Hinweis (Web Anwendungen (z.B. pgadmin, Web-Latex)):** Wenn eine Applikation eine Web-Oberfläche bereitstellt, muss bei der Auswahl der Security Group (z.B. bei der Variable shared_secgroup_id) darauf geachtet werden, dass sie für HTTP-Zugriffe ausgelegt ist. Sie benötigt eine Eintritts-Regel für TCP auf Port 80 (HTTP) von 0.0.0.0/0. Fehlt diese Regel, sind die Web-Oberflächen nach dem Deployment nicht erreichbar.
 
 6. Den Abschluss des Deployment-Prozesses bildet die Übersichts-Seite. Hier findest du eine Zusammenfassung deiner Auswahl: Basis-Konfigurationen, Team-Zuweisung und die Variablen-Konfiguration. Falls du noch etwas anpassen möchtest, kannst du unten links über den Button **Zurück** jederzeit einen Schritt im Prozess zurückgehen. Ist alles korrekt, klicke unten rechts auf **Deployen**, um den Vorgang abzuschließen.
 
@@ -904,6 +908,13 @@ Die Deployments werden als Kacheln angezeigt.
 <figure style="margin-bottom: 30px;">
   <img src="img/Summary.png" alt="Übersicht" width="80%">
   <figcaption style="font-size: 0.9em; color: #555;">Übersicht: Zusammenfassung der Basis-Konfigurationen, Team-Zuteilung und Varianlen-Konfiguration</figcaption>
+</figure>
+
+> **Hinweis (Web Anwendungen (z.B. pgadmin, Web-Latex)):** Wenn eine Applikation eine Web-Oberfläche bereitstellt, muss bei der Auswahl der Security Group (z.B. bei der Variable shared_secgroup_id) darauf geachtet werden, dass sie für HTTP-Zugriffe ausgelegt ist. Sie benötigt eine Eintritts-Regel für TCP auf Port 80 (HTTP) von 0.0.0.0/0. Fehlt diese Regel, sind die Web-Oberflächen nach dem Deployment nicht erreichbar.
+
+<figure style="margin-bottom: 30px;">
+  <img src="img/Regelkonfiguration.png" alt="Dropdown und Dateiupload" width="80%">
+  <figcaption style="font-size: 0.9em; color: #555;">Dropdown und Dateiupload</figcaption>
 </figure>
 
 ---
