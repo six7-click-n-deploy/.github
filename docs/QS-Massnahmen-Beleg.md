@@ -1,9 +1,15 @@
-# QS-Maßnahmen — Beleg der Durchführung (6P)
+# QS-Maßnahmen — Beleg der Durchführung
 
 > **Projekt:** OpenStack AppStore (six7-click-n-deploy)
 > **Organisation:** [`github.com/six7-click-n-deploy`](https://github.com/six7-click-n-deploy)
 > **Stand:** 25.07.2026
 > **Zweck:** Nachweis der durchgeführten Qualitätssicherungs­maßnahmen im Studienprojekt.
+
+### Autoren
+1. **Okan Sönmez**
+
+### Reviewer (Prüfer)
+1. **Leon Priemer**
 
 ---
 
